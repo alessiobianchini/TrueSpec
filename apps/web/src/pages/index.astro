@@ -10,6 +10,124 @@ import Waitlist from "../components/Waitlist.astro";
   <SiteNav />
   <Hero />
 
+  <section id="use-cases" class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="card border border-base-300 bg-base-200/60 shadow-xl" data-reveal style="--delay:0s">
+        <div class="card-body gap-10 p-8 md:p-12">
+          <div class="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Use cases + ROI</p>
+              <h2 class="mt-3 text-3xl font-semibold md:text-4xl">
+                One report that saves releases.
+              </h2>
+              <p class="mt-4 text-base-content/70">
+                TrueSpec highlights the contract changes that matter, so teams avoid late fixes and
+                ship with confidence.
+              </p>
+
+              <ul class="mt-8 space-y-4 text-base-content/75">
+                <li class="flex flex-wrap items-start gap-4">
+                  <span class="badge badge-outline">Breaking gate</span>
+                  <div>
+                    <p class="font-semibold">Block breaking changes early</p>
+                    <p class="text-sm text-base-content/70">Catch incompatible diffs before they hit main.</p>
+                  </div>
+                </li>
+                <li class="flex flex-wrap items-start gap-4">
+                  <span class="badge badge-outline">Spec compliance</span>
+                  <div>
+                    <p class="font-semibold">Keep contracts aligned</p>
+                    <p class="text-sm text-base-content/70">Reduce drift between docs, schemas, and services.</p>
+                  </div>
+                </li>
+                <li class="flex flex-wrap items-start gap-4">
+                  <span class="badge badge-outline">PR velocity</span>
+                  <div>
+                    <p class="font-semibold">Shorten review cycles</p>
+                    <p class="text-sm text-base-content/70">Give reviewers a focused diff with severity.</p>
+                  </div>
+                </li>
+                <li class="flex flex-wrap items-start gap-4">
+                  <span class="badge badge-outline">Partner APIs</span>
+                  <div>
+                    <p class="font-semibold">Protect external integrations</p>
+                    <p class="text-sm text-base-content/70">Avoid silent breakages for partners and clients.</p>
+                  </div>
+                </li>
+              </ul>
+
+              <div class="mt-8 flex flex-wrap gap-3">
+                <a class="btn btn-primary" href="#waitlist">Get early access</a>
+                <a class="btn btn-ghost" href="#how">How it works</a>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between text-xs uppercase tracking-widest text-base-content/60">
+                <span class="badge badge-outline">Demo</span>
+                <span>30s preview</span>
+              </div>
+              <div class="mt-4 overflow-hidden rounded-2xl border border-base-300 bg-base-100/70">
+                <img
+                  src="/demo.gif"
+                  alt="TrueSpec demo preview"
+                  loading="lazy"
+                  onerror="this.onerror=null;this.src='/demo-placeholder.svg';"
+                />
+              </div>
+              <p class="mt-3 text-sm text-base-content/70">
+                Drift report output for a real pull request, captured in CI.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid gap-8 border-t border-base-300/60 pt-8 lg:grid-cols-2">
+            <div>
+              <span class="text-xs uppercase tracking-[0.3em] text-base-content/50">ROI outcomes</span>
+              <h3 class="mt-3 text-xl font-semibold">Where teams feel the impact</h3>
+              <ul class="mt-4 space-y-3 text-base-content/70">
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-success badge-outline">+</span>
+                  <span>Fewer late fixes from missed contract changes</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-success badge-outline">+</span>
+                  <span>Clear go/no-go signals before release</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-success badge-outline">+</span>
+                  <span>Stable integrations for partner teams</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <span class="text-xs uppercase tracking-[0.3em] text-base-content/50">Cost of drift</span>
+              <h3 class="mt-3 text-xl font-semibold">What teams pay today</h3>
+              <ul class="mt-4 space-y-3 text-base-content/70">
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-warning badge-outline">!</span>
+                  <span>Breaking changes slip into production</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-warning badge-outline">!</span>
+                  <span>Review cycles stall to verify contracts</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-warning badge-outline">!</span>
+                  <span>Docs and schemas drift from reality</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="badge badge-warning badge-outline">!</span>
+                  <span>Partner teams lose trust in API stability</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="how" class="py-20">
     <div class="mx-auto w-full max-w-6xl px-4">
       <div class="max-w-2xl" data-reveal style="--delay:0s">
@@ -134,6 +252,50 @@ import Waitlist from "../components/Waitlist.astro";
             </div>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="max-w-2xl" data-reveal style="--delay:0s">
+        <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">FAQ</p>
+        <h2 class="mt-3 text-3xl font-semibold md:text-4xl">Questions teams ask first</h2>
+        <p class="mt-4 text-base-content/70">
+          Short answers to help you evaluate TrueSpec quickly.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-4 lg:grid-cols-2">
+        <div class="collapse collapse-plus border border-base-300 bg-base-200/60" data-reveal style="--delay:0.05s">
+          <input type="checkbox" />
+          <div class="collapse-title text-lg font-semibold">What is spec drift?</div>
+          <div class="collapse-content text-base-content/70">
+            Spec drift happens when OpenAPI and implementation diverge. It creates broken clients,
+            confusing docs, and late rework.
+          </div>
+        </div>
+        <div class="collapse collapse-plus border border-base-300 bg-base-200/60" data-reveal style="--delay:0.1s">
+          <input type="checkbox" />
+          <div class="collapse-title text-lg font-semibold">What do we need to get started?</div>
+          <div class="collapse-content text-base-content/70">
+            An OpenAPI spec in your repo and CI access. TrueSpec runs via CLI and the GitHub Action.
+          </div>
+        </div>
+        <div class="collapse collapse-plus border border-base-300 bg-base-200/60" data-reveal style="--delay:0.15s">
+          <input type="checkbox" />
+          <div class="collapse-title text-lg font-semibold">Where does it run?</div>
+          <div class="collapse-content text-base-content/70">
+            In your CI and PR workflow. You get a clean report with breaking changes and diffs.
+          </div>
+        </div>
+        <div class="collapse collapse-plus border border-base-300 bg-base-200/60" data-reveal style="--delay:0.2s">
+          <input type="checkbox" />
+          <div class="collapse-title text-lg font-semibold">How do we get access?</div>
+          <div class="collapse-content text-base-content/70">
+            Join the waitlist. We are onboarding teams in batches for early access.
+          </div>
+        </div>
       </div>
     </div>
   </section>
