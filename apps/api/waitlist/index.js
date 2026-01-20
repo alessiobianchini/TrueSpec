@@ -9,6 +9,9 @@ try {
 }
 
 const TABLE_NAME = process.env.WAITLIST_TABLE_NAME || "waitlist";
+const TABLE_PARTITION = process.env.WAITLIST_PARTITION || "waitlist";
+const DEFAULT_PAGE_SIZE = 100;
+const MAX_PAGE_SIZE = 500;
 
 let tableClient = null;
 let tableReady = null;
@@ -124,11 +127,128 @@ function getEmail(req) {
   return null;
 }
 
+function getAdminToken(req) {
+  const headerToken = req?.headers?.["x-waitlist-token"];
+  if (headerToken) {
+    return headerToken;
+  }
+
+  const authHeader = req?.headers?.authorization;
+  if (authHeader && authHeader.toLowerCase().startsWith("bearer ")) {
+    return authHeader.slice(7).trim();
+  }
+
+  return null;
+}
+
+function normalizePageSize(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return DEFAULT_PAGE_SIZE;
+  }
+
+  return Math.min(parsed, MAX_PAGE_SIZE);
+}
+
+function getContinuationToken(req) {
+  const nextPartitionKey = req?.query?.nextPartitionKey;
+  const nextRowKey = req?.query?.nextRowKey;
+
+  if (!nextPartitionKey && !nextRowKey) {
+    return undefined;
+  }
+
+  return {
+    nextPartitionKey,
+    nextRowKey,
+  };
+}
+
+function toOdataString(value) {
+  return String(value).replace(/'/g, "''");
+}
+
 module.exports = async function (context, req) {
   const debug = /^(1|true)$/i.test(process.env.WAITLIST_DEBUG || "");
 
   try {
-    if (req.method !== "POST") {
+    const method = (req?.method || "").toUpperCase();
+    if (method === "GET") {
+      const expectedToken = process.env.WAITLIST_ADMIN_TOKEN || "";
+      const providedToken = getAdminToken(req);
+
+      if (!expectedToken) {
+        context.res = {
+          status: 403,
+          body: "Admin token not configured",
+        };
+        return;
+      }
+
+      if (!providedToken || providedToken !== expectedToken) {
+        context.res = {
+          status: 403,
+          body: "Forbidden",
+        };
+        return;
+      }
+
+      await ensureTable();
+      const client = getTableClient();
+      const pageSize = normalizePageSize(
+        req?.query?.limit || req?.query?.top || req?.query?.pageSize
+      );
+      const continuationToken = getContinuationToken(req);
+      const filter = `PartitionKey eq '${toOdataString(TABLE_PARTITION)}'`;
+
+      const items = [];
+      const pages = client.listEntities({
+        queryOptions: {
+          filter,
+          select: [
+            "partitionKey",
+            "rowKey",
+            "email",
+            "createdAt",
+            "source",
+            "timestamp",
+          ],
+        },
+      }).byPage({
+        maxPageSize: pageSize,
+        continuationToken,
+      });
+
+      let nextToken = null;
+      for await (const page of pages) {
+        for (const entity of page) {
+          items.push({
+            partitionKey: entity.partitionKey || entity.PartitionKey,
+            rowKey: entity.rowKey || entity.RowKey,
+            email: entity.email || null,
+            createdAt: entity.createdAt || null,
+            source: entity.source || null,
+            timestamp: entity.timestamp || entity.Timestamp || null,
+          });
+        }
+        nextToken = page.continuationToken || null;
+        break;
+      }
+
+      context.res = {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          items,
+          continuationToken: nextToken,
+        },
+      };
+      return;
+    }
+
+    if (method !== "POST") {
       context.res = { status: 405 };
       return;
     }
@@ -149,12 +269,12 @@ module.exports = async function (context, req) {
     const rowKey = encodeURIComponent(email);
 
     try {
-      await client.createEntity({
-        partitionKey: "waitlist",
-        rowKey,
-        email,
-        createdAt: new Date().toISOString(),
-        source: "landing",
+    await client.createEntity({
+      partitionKey: TABLE_PARTITION,
+      rowKey,
+      email,
+      createdAt: new Date().toISOString(),
+      source: "landing",
       });
     } catch (error) {
       const status = error?.statusCode;
