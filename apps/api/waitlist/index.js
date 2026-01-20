@@ -1,19 +1,42 @@
-const { TableClient, TableServiceClient } = require("@azure/data-tables");
+let TableClient;
+let TableServiceClient;
+let loadError = null;
+
+try {
+  ({ TableClient, TableServiceClient } = require("@azure/data-tables"));
+} catch (error) {
+  loadError = error;
+}
 
 const TABLE_NAME = process.env.WAITLIST_TABLE_NAME || "waitlist";
-const STORAGE_CONNECTION =
-  process.env.WAITLIST_STORAGE_CONNECTION_STRING || process.env.AzureWebJobsStorage;
 
 let tableClient = null;
 let tableReady = null;
 
+function getStorageConnection() {
+  return (
+    process.env.WAITLIST_STORAGE_CONNECTION_STRING ||
+    process.env.AzureWebJobsStorage ||
+    ""
+  );
+}
+
 function getTableClient() {
-  if (!STORAGE_CONNECTION) {
+  if (loadError) {
+    throw loadError;
+  }
+
+  if (!TableClient) {
+    throw new Error("TableClient is not available.");
+  }
+
+  const storageConnection = getStorageConnection();
+  if (!storageConnection) {
     throw new Error("Missing storage connection string.");
   }
 
   if (!tableClient) {
-    tableClient = TableClient.fromConnectionString(STORAGE_CONNECTION, TABLE_NAME);
+    tableClient = TableClient.fromConnectionString(storageConnection, TABLE_NAME);
   }
 
   return tableClient;
@@ -25,11 +48,20 @@ async function ensureTable() {
   }
 
   tableReady = (async () => {
-    if (!STORAGE_CONNECTION) {
+    if (loadError) {
+      throw loadError;
+    }
+
+    if (!TableServiceClient) {
+      throw new Error("TableServiceClient is not available.");
+    }
+
+    const storageConnection = getStorageConnection();
+    if (!storageConnection) {
       throw new Error("Missing storage connection string.");
     }
 
-    const serviceClient = TableServiceClient.fromConnectionString(STORAGE_CONNECTION);
+    const serviceClient = TableServiceClient.fromConnectionString(storageConnection);
     try {
       await serviceClient.createTable(TABLE_NAME);
     } catch (error) {
