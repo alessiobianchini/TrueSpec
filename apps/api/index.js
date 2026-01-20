@@ -1,0 +1,1 @@
+require("./waitlist/index.js");
