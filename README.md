@@ -86,7 +86,11 @@ Form fields:
 - `email` (required)
 
 The current implementation stores emails locally for MVP purposes.
-This will be replaced by persistent storage in later versions.
+Emails are stored in Azure Table Storage using the Azure Functions app settings.
+
+Required settings for production:
+- `WAITLIST_STORAGE_CONNECTION_STRING` (optional; falls back to `AzureWebJobsStorage`)
+- `WAITLIST_TABLE_NAME` (optional, default: `waitlist`)
 
 ## Roadmap (short)
 
