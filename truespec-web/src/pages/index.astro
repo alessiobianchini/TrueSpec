@@ -7,22 +7,132 @@ import Waitlist from "../components/Waitlist.astro";
 <BaseLayout>
   <Hero />
 
-  <section id="how" style="max-width:1100px;margin:0 auto;padding:36px 18px;color:rgba(229,231,235,.8)">
-    <h2 style="color:#fff;margin:0 0 10px">How it works</h2>
-    <ol style="margin:0;padding-left:18px;line-height:1.7">
-      <li>Connect your repo (OpenAPI/Swagger + source).</li>
-      <li>TrueSpec runs drift checks on every PR.</li>
-      <li>Get a report: breaking changes, mismatches, missing docs.</li>
-    </ol>
+  <section id="how" class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="max-w-2xl" data-reveal style="--delay:0s">
+        <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Workflow</p>
+        <h2 class="mt-3 text-3xl font-semibold md:text-4xl">Guard every pull request</h2>
+        <p class="mt-4 text-base-content/70">
+          TrueSpec runs on each PR to compare your OpenAPI and the code behind it.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.05s">
+          <div class="card-body">
+            <span class="badge badge-outline">01</span>
+            <h3 class="card-title">Connect your repo</h3>
+            <p class="text-base-content/70">Point to your OpenAPI spec and the services that implement it.</p>
+          </div>
+        </article>
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.1s">
+          <div class="card-body">
+            <span class="badge badge-outline">02</span>
+            <h3 class="card-title">Run on every PR</h3>
+            <p class="text-base-content/70">TrueSpec checks changes in code and in spec as part of CI.</p>
+          </div>
+        </article>
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.15s">
+          <div class="card-body">
+            <span class="badge badge-outline">03</span>
+            <h3 class="card-title">Ship with confidence</h3>
+            <p class="text-base-content/70">Get a readable report with breaking changes and mismatches.</p>
+          </div>
+        </article>
+      </div>
+    </div>
   </section>
 
-  <section id="features" style="max-width:1100px;margin:0 auto;padding:18px;color:rgba(229,231,235,.8)">
-    <h2 style="color:#fff;margin:0 0 10px">Features</h2>
-    <ul style="margin:0;padding-left:18px;line-height:1.7">
-      <li>OpenAPI diff + breaking-change detection</li>
-      <li>CI-friendly output (GitHub Action ready)</li>
-      <li>Human-readable reports</li>
-    </ul>
+  <section id="features" class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="rounded-3xl border border-base-300 bg-base-200/40 p-8 md:p-12">
+        <div class="max-w-2xl" data-reveal style="--delay:0s">
+          <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Capabilities</p>
+          <h2 class="mt-3 text-3xl font-semibold md:text-4xl">Reports that developers trust</h2>
+          <p class="mt-4 text-base-content/70">
+            Built for CI and PR review. No noise, just clear answers on what changed.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          <article class="card border border-base-300 bg-base-100/70" data-reveal style="--delay:0.05s">
+            <div class="card-body">
+              <span class="badge badge-outline">Breaking changes</span>
+              <h3 class="card-title">Strict diff engine</h3>
+              <p class="text-base-content/70">Detect removals, incompatible responses, and contract drift fast.</p>
+            </div>
+          </article>
+          <article class="card border border-base-300 bg-base-100/70" data-reveal style="--delay:0.1s">
+            <div class="card-body">
+              <span class="badge badge-outline">CI ready</span>
+              <h3 class="card-title">Actionable annotations</h3>
+              <p class="text-base-content/70">Inline comments for missing docs and mismatched schemas.</p>
+            </div>
+          </article>
+          <article class="card border border-base-300 bg-base-100/70" data-reveal style="--delay:0.15s">
+            <div class="card-body">
+              <span class="badge badge-outline">Readable output</span>
+              <h3 class="card-title">Human friendly reports</h3>
+              <p class="text-base-content/70">Summaries that unblock merges and align teams.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="signal" class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="max-w-2xl" data-reveal style="--delay:0s">
+        <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Why TrueSpec</p>
+        <h2 class="mt-3 text-3xl font-semibold md:text-4xl">
+          Everything you need to keep specs honest
+        </h2>
+        <p class="mt-4 text-base-content/70">
+          Early access includes the CLI core, GitHub Action, and a roadmap shaped by your feedback.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-6 lg:grid-cols-2">
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.05s">
+          <div class="card-body">
+            <h3 class="card-title">What you get on day one</h3>
+            <ul class="mt-4 space-y-3 text-base-content/70">
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">+</span>
+                <span>Endpoint level diff reports</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">+</span>
+                <span>Breaking change alerts with severity</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">+</span>
+                <span>Missing docs and schema drift highlights</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">+</span>
+                <span>Clean output for PR review</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.1s">
+          <div class="card-body">
+            <h3 class="card-title">Built for fast teams</h3>
+            <p class="text-base-content/70">
+              Stop guessing if a change is safe. TrueSpec highlights what changed and why it matters.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="badge badge-outline">CLI first</span>
+              <span class="badge badge-outline">GitHub Action</span>
+              <span class="badge badge-outline">No lock-in</span>
+              <span class="badge badge-outline">Team ready</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
   </section>
 
   <Waitlist />

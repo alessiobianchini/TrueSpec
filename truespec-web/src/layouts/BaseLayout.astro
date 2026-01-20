@@ -1,6 +1,6 @@
 ---
 const {
-  title = "TrueSpec — Keep your API docs honest",
+  title = "TrueSpec - Keep your API docs honest",
   description = "Detect drift between your code and your OpenAPI/Swagger specs. Catch breaking changes before they hit production.",
   canonical = "https://truespec-app.com/",
   ogImage = "/brand/og.png",
@@ -8,7 +8,7 @@ const {
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="truespec">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -27,10 +27,20 @@ const {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <meta name="theme-color" content="#0a0d12" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/styles/global.css" />
   </head>
-  <body>
-    <slot />
+  <body class="min-h-screen text-base-content">
+    <main class="min-h-screen">
+      <slot />
+    </main>
   </body>
 </html>

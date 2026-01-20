@@ -1,26 +1,43 @@
-<section id="waitlist" class="wrap">
-  <div class="card">
-    <div class="copy">
-      <h2>Join the waitlist</h2>
-      <p>Be the first to try TrueSpec and get early access updates.</p>
+<section id="waitlist" class="py-20">
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <div class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.05s">
+      <div class="card-body gap-8 lg:flex-row lg:items-center">
+        <div class="flex-1">
+          <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Early access</p>
+          <h2 class="mt-3 text-3xl font-semibold md:text-4xl">Join the waitlist</h2>
+          <p class="mt-3 text-base-content/70">Be the first to try TrueSpec and get product updates.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="badge badge-outline">CLI preview</span>
+            <span class="badge badge-outline">GitHub Action</span>
+            <span class="badge badge-outline">Private beta</span>
+          </div>
+        </div>
+
+        <div class="flex-1">
+          <form class="join w-full" data-waitlist-form action="/api/waitlist" method="post">
+            <label class="sr-only" for="waitlist-email">Email address</label>
+            <input
+              id="waitlist-email"
+              class="input input-bordered join-item w-full"
+              type="email"
+              name="email"
+              placeholder="you@company.com"
+              autocomplete="email"
+              required
+            />
+            <button class="btn btn-primary join-item" type="submit">Join waitlist</button>
+          </form>
+
+          <p
+            class="status mt-2 text-sm min-h-[1.2em] text-base-content/60"
+            data-waitlist-status
+            role="status"
+            aria-live="polite"
+          ></p>
+          <p class="text-xs text-base-content/50">No spam. Only early access updates.</p>
+        </div>
+      </div>
     </div>
-
-    <form class="form" data-waitlist-form action="/api/waitlist" method="post">
-      <label class="sr-only" for="waitlist-email">Email address</label>
-      <input
-        id="waitlist-email"
-        class="input"
-        type="email"
-        name="email"
-        placeholder="you@company.com"
-        autocomplete="email"
-        required
-      />
-      <button class="btn primary" type="submit">Join waitlist</button>
-    </form>
-
-    <p class="status" data-waitlist-status role="status" aria-live="polite"></p>
-    <p class="note">No spam. Only early access updates.</p>
   </div>
 </section>
 
@@ -30,12 +47,17 @@
 
   if (form instanceof HTMLFormElement && status instanceof HTMLElement) {
     const button = form.querySelector('button[type="submit"]');
+    const setStatus = (message, state) => {
+      status.textContent = message;
+      status.dataset.state = state;
+    };
+
+    setStatus("", "idle");
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      status.textContent = "Submitting...";
-      status.dataset.state = "loading";
+      setStatus("Submitting...", "loading");
       if (button instanceof HTMLButtonElement) {
         button.disabled = true;
       }
@@ -52,11 +74,9 @@
         }
 
         form.reset();
-        status.textContent = "Thanks. You are on the list.";
-        status.dataset.state = "success";
+        setStatus("Thanks. You are on the list.", "success");
       } catch (error) {
-        status.textContent = "Something went wrong. Please try again.";
-        status.dataset.state = "error";
+        setStatus("Something went wrong. Please try again.", "error");
       } finally {
         if (button instanceof HTMLButtonElement) {
           button.disabled = false;
@@ -67,113 +87,11 @@
 </script>
 
 <style>
-  .wrap {
-    padding: 36px 18px 72px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .card {
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    padding: 24px;
-    display: grid;
-    gap: 12px;
-  }
-
-  .copy h2 {
-    margin: 0 0 6px;
-    font-size: clamp(24px, 4vw, 32px);
-    color: #fff;
-  }
-
-  .copy p {
-    margin: 0;
-    color: rgba(229, 231, 235, 0.8);
-  }
-
-  .form {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .input {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(15, 23, 42, 0.6);
-    color: var(--fg);
-    font-size: 15px;
-  }
-
-  .input:focus {
-    outline: 2px solid rgba(59, 163, 247, 0.6);
-    outline-offset: 1px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #071018;
-    font-weight: 700;
-    background: var(--accent);
-    cursor: pointer;
-    transition: filter 150ms ease, transform 150ms ease;
-  }
-
-  .btn:hover {
-    filter: brightness(1.05);
-  }
-
-  .btn:disabled {
-    cursor: not-allowed;
-    filter: grayscale(0.4);
-    opacity: 0.7;
-  }
-
-  .status {
-    min-height: 1.2em;
-    margin: 0;
-    font-size: 14px;
-    color: rgba(229, 231, 235, 0.7);
-  }
-
   .status[data-state="success"] {
-    color: #86efac;
+    color: #22c55e;
   }
 
   .status[data-state="error"] {
-    color: #fca5a5;
-  }
-
-  .note {
-    margin: 0;
-    font-size: 12px;
-    color: rgba(229, 231, 235, 0.6);
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-  }
-
-  @media (max-width: 640px) {
-    .form {
-      grid-template-columns: 1fr;
-    }
+    color: #f87171;
   }
 </style>

@@ -2,56 +2,71 @@
 import Logo from "./Logo.astro";
 ---
 
-<header class="wrap">
-  <div class="top">
-    <Logo size={34} />
-    <nav class="nav">
-      <a href="#how">How it works</a>
-      <a href="#features">Features</a>
-      <a href="#waitlist">Waitlist</a>
-    </nav>
+<header class="pt-6">
+  <div class="mx-auto w-full max-w-6xl px-4" data-reveal style="--delay:0s">
+    <div class="navbar px-0">
+      <div class="navbar-start gap-3">
+        <Logo size={38} />
+        <span class="badge badge-outline text-xs">Spec drift</span>
+      </div>
+      <div class="navbar-center hidden md:flex">
+        <ul class="menu menu-horizontal px-1 text-sm">
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#signal">Why TrueSpec</a></li>
+          <li><a href="#waitlist">Waitlist</a></li>
+        </ul>
+      </div>
+      <div class="navbar-end">
+        <a class="btn btn-sm btn-outline" href="#waitlist">Early access</a>
+      </div>
+    </div>
   </div>
 
   <div class="hero">
-    <h1>
-      Keep your API docs <span class="accent">honest</span>.
-    </h1>
-    <p class="sub">
-      TrueSpec detects drift between your code and your specs (OpenAPI/Swagger) and reports breaking changes before your users do.
-    </p>
+    <div class="hero-content w-full max-w-6xl flex-col gap-10 px-4 py-10 lg:flex-row">
+      <div class="max-w-xl" data-reveal style="--delay:0.1s">
+        <span class="badge badge-outline">Spec drift guardrails</span>
+        <h1 class="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+          Ship API changes with spec confidence.
+        </h1>
+        <p class="mt-4 text-lg text-base-content/70">
+          TrueSpec compares your OpenAPI with the code behind it and flags breaking changes before merge.
+        </p>
 
-    <div class="actions">
-      <a class="btn primary" href="#waitlist">Join the waitlist</a>
-      <a class="btn" href="#how">See how it works</a>
-    </div>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a class="btn btn-primary" href="#waitlist">Join the waitlist</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
 
-    <div class="meta">
-      <span>🔎 Drift checks</span>
-      <span>🧪 CI-ready</span>
-      <span>⚡ Fast setup</span>
+        <div class="mt-4 flex flex-wrap gap-2 text-sm text-base-content/70">
+          <span class="badge badge-outline">CI ready</span>
+          <span class="badge badge-outline">Fast setup</span>
+          <span class="badge badge-outline">Readable reports</span>
+        </div>
+      </div>
+
+      <div
+        class="card w-full max-w-md border border-base-300 bg-base-200/70 shadow-xl"
+        data-reveal
+        style="--delay:0.2s"
+      >
+        <div class="card-body gap-4">
+          <div class="flex items-center justify-between text-xs uppercase tracking-widest text-base-content/60">
+            <span class="badge badge-outline">PR #214</span>
+            <span>Drift report</span>
+          </div>
+          <div class="mockup-code text-xs">
+            <pre data-prefix="1" class="text-error"><code>BREAK DELETE /v1/users/&#123;id&#125;</code></pre>
+            <pre data-prefix="2" class="text-warning"><code>WARN  PUT /v1/plans missing description</code></pre>
+            <pre data-prefix="3" class="text-info"><code>INFO  Added schema: BillingError</code></pre>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+            <span class="badge badge-error badge-outline">Status: block merge</span>
+            <span class="font-mono text-xs text-warning">Fix spec or code</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
-
-<style>
-  .wrap { padding: 28px 18px 10px; max-width: 1100px; margin: 0 auto; }
-  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .nav { display: flex; gap: 16px; }
-  .nav a { color: rgba(229,231,235,.85); text-decoration: none; fonta: none; font-size: 14px; }
-  .nav a:hover { color: #fff; }
-
-  .hero { padding: 56px 0 34px; text-align: left; }
-  h1 { margin: 0; font-size: clamp(34px, 5vw, 56px); letter-spacing: -1.2px; line-height: 1.05; }
-  .accent { color: var(--accent); }
-  .sub { margin: 16px 0 0; max-width: 62ch; color: rgba(229,231,235,.8); font-size: 18px; line-height: 1.55; }
-
-  .actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 16px; border-radius: 12px;
-         border: 1px solid rgba(255,255,255,.12); text-decoration: none; color: #fff; }
-  .btn:hover { border-color: rgba(255,255,255,.25); }
-  .primary { background: var(--accent); border-color: transparent; color: #071018; font-weight: 700; }
-  .primary:hover { filter: brightness(1.05); }
-
-  .meta { margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; color: rgba(229,231,235,.7); font-size: 13px; }
-  @media (max-width: 640px) { .nav { display: none; } }
-</style>
