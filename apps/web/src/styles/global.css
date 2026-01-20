@@ -5,6 +5,8 @@
 :root {
   color-scheme: dark;
   --nav-height: 80px;
+  --accent-from: #38bdf8;
+  --accent-to: #2563eb;
 }
 
 html {
@@ -46,6 +48,21 @@ img {
 
 a {
   color: inherit;
+}
+
+.accent-gradient {
+  color: var(--accent-from);
+  background: linear-gradient(120deg, var(--accent-from), var(--accent-to));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 18px rgba(56, 189, 248, 0.2);
+}
+
+.accent-badge {
+  border-color: rgba(56, 189, 248, 0.6);
+  color: #7dd3fc;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.12);
 }
 
 button,
