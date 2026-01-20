@@ -1,0 +1,179 @@
+<section id="waitlist" class="wrap">
+  <div class="card">
+    <div class="copy">
+      <h2>Join the waitlist</h2>
+      <p>Be the first to try TrueSpec and get early access updates.</p>
+    </div>
+
+    <form class="form" data-waitlist-form action="/api/waitlist" method="post">
+      <label class="sr-only" for="waitlist-email">Email address</label>
+      <input
+        id="waitlist-email"
+        class="input"
+        type="email"
+        name="email"
+        placeholder="you@company.com"
+        autocomplete="email"
+        required
+      />
+      <button class="btn primary" type="submit">Join waitlist</button>
+    </form>
+
+    <p class="status" data-waitlist-status role="status" aria-live="polite"></p>
+    <p class="note">No spam. Only early access updates.</p>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector("[data-waitlist-form]");
+  const status = document.querySelector("[data-waitlist-status]");
+
+  if (form instanceof HTMLFormElement && status instanceof HTMLElement) {
+    const button = form.querySelector('button[type="submit"]');
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      status.textContent = "Submitting...";
+      status.dataset.state = "loading";
+      if (button instanceof HTMLButtonElement) {
+        button.disabled = true;
+      }
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+        });
+
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || `Request failed (${response.status})`);
+        }
+
+        form.reset();
+        status.textContent = "Thanks. You are on the list.";
+        status.dataset.state = "success";
+      } catch (error) {
+        status.textContent = "Something went wrong. Please try again.";
+        status.dataset.state = "error";
+      } finally {
+        if (button instanceof HTMLButtonElement) {
+          button.disabled = false;
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .wrap {
+    padding: 36px 18px 72px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    padding: 24px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .copy h2 {
+    margin: 0 0 6px;
+    font-size: clamp(24px, 4vw, 32px);
+    color: #fff;
+  }
+
+  .copy p {
+    margin: 0;
+    color: rgba(229, 231, 235, 0.8);
+  }
+
+  .form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.6);
+    color: var(--fg);
+    font-size: 15px;
+  }
+
+  .input:focus {
+    outline: 2px solid rgba(59, 163, 247, 0.6);
+    outline-offset: 1px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #071018;
+    font-weight: 700;
+    background: var(--accent);
+    cursor: pointer;
+    transition: filter 150ms ease, transform 150ms ease;
+  }
+
+  .btn:hover {
+    filter: brightness(1.05);
+  }
+
+  .btn:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.4);
+    opacity: 0.7;
+  }
+
+  .status {
+    min-height: 1.2em;
+    margin: 0;
+    font-size: 14px;
+    color: rgba(229, 231, 235, 0.7);
+  }
+
+  .status[data-state="success"] {
+    color: #86efac;
+  }
+
+  .status[data-state="error"] {
+    color: #fca5a5;
+  }
+
+  .note {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(229, 231, 235, 0.6);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  @media (max-width: 640px) {
+    .form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

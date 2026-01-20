@@ -1,0 +1,12 @@
+---
+const { size = 36, alt = "TrueSpec" } = Astro.props;
+---
+
+<a href="/" class="logo" aria-label={alt}>
+  <img src="/brand/logo.svg" width={size * 4} height={size} alt={alt} />
+</a>
+
+<style>
+  .logo { display: inline-flex; align-items: center; text-decoration: none; }
+  img { display: block; height: auto; }
+</style>

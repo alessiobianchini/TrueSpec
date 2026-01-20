@@ -1,0 +1,60 @@
+# --------------------
+# Node / pnpm
+# --------------------
+node_modules/
+.pnpm-store/
+npm-debug.log*
+pnpm-debug.log*
+
+# --------------------
+# Build output
+# --------------------
+dist/
+.build/
+coverage/
+
+# --------------------
+# Astro
+# --------------------
+.astro/
+.cache/
+
+# --------------------
+# Azure Functions
+# --------------------
+api/node_modules/
+api/dist/
+api/.funcpack/
+api/bin/
+api/obj/
+
+# Local settings (IMPORTANT: never commit)
+api/local.settings.json
+
+# Azure SWA local emulator
+.swa/
+
+# --------------------
+# Environment files
+# --------------------
+.env
+.env.*
+!.env.example
+
+# --------------------
+# Logs / temp
+# --------------------
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# --------------------
+# IDEs
+# --------------------
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+.idea/

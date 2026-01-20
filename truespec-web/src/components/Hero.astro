@@ -1,0 +1,57 @@
+---
+import Logo from "./Logo.astro";
+---
+
+<header class="wrap">
+  <div class="top">
+    <Logo size={34} />
+    <nav class="nav">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#waitlist">Waitlist</a>
+    </nav>
+  </div>
+
+  <div class="hero">
+    <h1>
+      Keep your API docs <span class="accent">honest</span>.
+    </h1>
+    <p class="sub">
+      TrueSpec detects drift between your code and your specs (OpenAPI/Swagger) and reports breaking changes before your users do.
+    </p>
+
+    <div class="actions">
+      <a class="btn primary" href="#waitlist">Join the waitlist</a>
+      <a class="btn" href="#how">See how it works</a>
+    </div>
+
+    <div class="meta">
+      <span>🔎 Drift checks</span>
+      <span>🧪 CI-ready</span>
+      <span>⚡ Fast setup</span>
+    </div>
+  </div>
+</header>
+
+<style>
+  .wrap { padding: 28px 18px 10px; max-width: 1100px; margin: 0 auto; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .nav { display: flex; gap: 16px; }
+  .nav a { color: rgba(229,231,235,.85); text-decoration: none; fonta: none; font-size: 14px; }
+  .nav a:hover { color: #fff; }
+
+  .hero { padding: 56px 0 34px; text-align: left; }
+  h1 { margin: 0; font-size: clamp(34px, 5vw, 56px); letter-spacing: -1.2px; line-height: 1.05; }
+  .accent { color: var(--accent); }
+  .sub { margin: 16px 0 0; max-width: 62ch; color: rgba(229,231,235,.8); font-size: 18px; line-height: 1.55; }
+
+  .actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 16px; border-radius: 12px;
+         border: 1px solid rgba(255,255,255,.12); text-decoration: none; color: #fff; }
+  .btn:hover { border-color: rgba(255,255,255,.25); }
+  .primary { background: var(--accent); border-color: transparent; color: #071018; font-weight: 700; }
+  .primary:hover { filter: brightness(1.05); }
+
+  .meta { margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; color: rgba(229,231,235,.7); font-size: 13px; }
+  @media (max-width: 640px) { .nav { display: none; } }
+</style>
