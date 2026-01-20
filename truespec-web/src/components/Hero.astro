@@ -22,27 +22,77 @@
         </div>
       </div>
 
-      <div
-        class="card w-full max-w-md border border-base-300 bg-base-200/70 shadow-xl"
-        data-reveal
-        style="--delay:0.2s"
-      >
-        <div class="card-body gap-4">
-          <div class="flex items-center justify-between text-xs uppercase tracking-widest text-base-content/60">
-            <span class="badge badge-outline">PR #214</span>
-            <span>Drift report</span>
-          </div>
-          <div class="mockup-code text-xs">
-            <pre data-prefix="1" class="text-error"><code>BREAK DELETE /v1/users/&#123;id&#125;</code></pre>
-            <pre data-prefix="2" class="text-warning"><code>WARN  PUT /v1/plans missing description</code></pre>
-            <pre data-prefix="3" class="text-info"><code>INFO  Added schema: BillingError</code></pre>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
-            <span class="badge badge-error badge-outline">Status: block merge</span>
-            <span class="font-mono text-xs text-warning">Fix spec or code</span>
+      <div class="parallax-wrap" data-reveal style="--delay:0.2s">
+        <div
+          class="card w-full max-w-md border border-base-300 bg-base-200/70 shadow-xl parallax-card"
+          data-parallax
+        >
+          <div class="card-body gap-4">
+            <div class="flex items-center justify-between text-xs uppercase tracking-widest text-base-content/60">
+              <span class="badge badge-outline">PR #214</span>
+              <span>Drift report</span>
+            </div>
+            <div class="mockup-code text-xs">
+              <pre data-prefix="1" class="text-error"><code>BREAK DELETE /v1/users/&#123;id&#125;</code></pre>
+              <pre data-prefix="2" class="text-warning"><code>WARN  PUT /v1/plans missing description</code></pre>
+              <pre data-prefix="3" class="text-info"><code>INFO  Added schema: BillingError</code></pre>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+              <span class="badge badge-error badge-outline">Status: block merge</span>
+              <span class="font-mono text-xs text-warning">Fix spec or code</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </header>
+
+<script>
+  const parallaxTarget = document.querySelector("[data-parallax]");
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (parallaxTarget instanceof HTMLElement && !prefersReduced) {
+    const strength = 12;
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const rect = parallaxTarget.getBoundingClientRect();
+      const viewport = window.innerHeight || 0;
+      const center = rect.top + rect.height / 2;
+      const distance = center - viewport / 2;
+      const ratio = Math.max(-1, Math.min(1, distance / viewport));
+      const offset = ratio * strength;
+      parallaxTarget.style.transform = `translateY(${offset.toFixed(2)}px)`;
+    };
+
+    const requestTick = () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(update);
+      }
+    };
+
+    window.addEventListener("scroll", requestTick, { passive: true });
+    window.addEventListener("resize", requestTick);
+    requestTick();
+  }
+</script>
+
+<style>
+  .parallax-wrap {
+    perspective: 900px;
+  }
+
+  .parallax-card {
+    will-change: transform;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .parallax-card {
+      transform: none;
+    }
+  }
+</style>

@@ -1,8 +1,13 @@
 ---
 import Logo from "./Logo.astro";
+
+const prefix = Astro.url.pathname === "/" ? "" : "/";
 ---
 
-<div class="fixed left-0 right-0 top-0 z-30 w-full border-b border-base-300/60 bg-base-100/70 backdrop-blur" data-site-nav>
+<div
+  class="fixed left-0 right-0 top-0 z-30 w-full border-b border-base-300/60 bg-base-100/70 backdrop-blur nav-shell"
+  data-site-nav
+>
   <div class="mx-auto w-full max-w-6xl px-4">
     <div class="navbar px-0 py-2">
       <div class="navbar-start gap-3">
@@ -31,10 +36,10 @@ import Logo from "./Logo.astro";
             aria-hidden="true"
           >
             <ul class="menu menu-sm">
-              <li><a href="#how">How it works</a></li>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#signal">Why TrueSpec</a></li>
-              <li><a href="#waitlist">Join the waitlist</a></li>
+              <li><a href={`${prefix}#how`}>How it works</a></li>
+              <li><a href={`${prefix}#features`}>Features</a></li>
+              <li><a href={`${prefix}#signal`}>Why TrueSpec</a></li>
+              <li><a href={`${prefix}#waitlist`}>Join the waitlist</a></li>
             </ul>
           </div>
         </div>
@@ -43,14 +48,14 @@ import Logo from "./Logo.astro";
       </div>
       <div class="navbar-center hidden md:flex">
         <ul class="menu menu-horizontal px-1 text-sm">
-          <li><a href="#how">How it works</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#signal">Why TrueSpec</a></li>
-          <li><a href="#waitlist">Waitlist</a></li>
+          <li><a href={`${prefix}#how`}>How it works</a></li>
+          <li><a href={`${prefix}#features`}>Features</a></li>
+          <li><a href={`${prefix}#signal`}>Why TrueSpec</a></li>
+          <li><a href={`${prefix}#waitlist`}>Waitlist</a></li>
         </ul>
       </div>
       <div class="navbar-end">
-        <a class="btn btn-sm btn-outline hidden sm:inline-flex" href="#waitlist">Early access</a>
+        <a class="btn btn-sm btn-outline hidden sm:inline-flex" href={`${prefix}#waitlist`}>Early access</a>
       </div>
     </div>
   </div>
@@ -79,6 +84,13 @@ import Logo from "./Logo.astro";
       menu.classList.add("is-open");
       menu.setAttribute("aria-hidden", "false");
     };
+
+    const updateNavState = () => {
+      nav.classList.toggle("nav-scrolled", window.scrollY > 8);
+    };
+
+    updateNavState();
+    window.addEventListener("scroll", updateNavState, { passive: true });
 
     if (toggle instanceof HTMLButtonElement && menu instanceof HTMLElement) {
       setNavHeight();
@@ -117,6 +129,16 @@ import Logo from "./Logo.astro";
 </script>
 
 <style>
+  .nav-shell {
+    transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+  }
+
+  .nav-shell.nav-scrolled {
+    border-color: rgba(148, 163, 184, 0.35);
+    background-color: rgba(10, 13, 18, 0.92);
+    box-shadow: 0 18px 48px rgba(2, 6, 23, 0.45);
+  }
+
   .mobile-menu {
     opacity: 0;
     transform: translateY(-8px) scale(0.98);

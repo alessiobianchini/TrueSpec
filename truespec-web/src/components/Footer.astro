@@ -1,0 +1,30 @@
+---
+const year = new Date().getFullYear();
+const isHome = Astro.url.pathname === "/";
+const prefix = isHome ? "" : "/";
+---
+
+<footer class="border-t border-base-300/60 bg-base-200/40">
+  <div class="mx-auto w-full max-w-6xl px-4 py-12">
+    {!isHome && (
+      <div class="card border border-base-300 bg-base-100/70" data-reveal style="--delay:0s">
+        <div class="card-body gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Ready when you are</p>
+            <h3 class="mt-2 text-2xl font-semibold md:text-3xl">Keep specs honest, ship faster.</h3>
+            <p class="mt-2 text-base-content/70">Get early access to the CLI and GitHub Action.</p>
+          </div>
+          <a class="btn btn-primary" href={`${prefix}#waitlist`}>Join the waitlist</a>
+        </div>
+      </div>
+    )}
+
+    <div class={`flex flex-col gap-3 text-sm text-base-content/60 md:flex-row md:items-center md:justify-between ${isHome ? "mt-4" : "mt-8"}`}>
+      <span>Copyright (c) {year} TrueSpec. All rights reserved.</span>
+      <div class="flex gap-4">
+        <a class="link link-hover" href="/privacy">Privacy</a>
+        <a class="link link-hover" href="/terms">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>

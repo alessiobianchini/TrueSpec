@@ -68,10 +68,44 @@ textarea {
   transform: translateY(0) scale(1);
 }
 
+@media (hover: hover) {
+  .btn-primary {
+    box-shadow: 0 10px 26px rgba(249, 115, 22, 0.25);
+    transition: box-shadow 200ms ease, transform 200ms ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 12px 32px rgba(249, 115, 22, 0.45),
+      0 0 18px rgba(249, 115, 22, 0.35);
+  }
+}
+
+@media (hover: hover) {
+  .card {
+    transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(148, 163, 184, 0.45);
+    box-shadow: 0 24px 50px rgba(2, 6, 23, 0.35);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal-ready [data-reveal] {
     opacity: 1;
     transform: none;
+    transition: none;
+  }
+
+  .btn-primary {
+    transition: none;
+  }
+
+  .card {
     transition: none;
   }
 }

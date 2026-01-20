@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import SiteNav from "../components/SiteNav.astro";
+---
+
+<BaseLayout title="TrueSpec - Terms">
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-3xl px-4">
+      <h1 class="text-3xl font-semibold md:text-4xl">Terms of service</h1>
+      <p class="mt-4 text-base-content/70">
+        TrueSpec is in early access. Features, pricing, and availability may change.
+      </p>
+      <div class="mt-6 space-y-4 text-base-content/70">
+        <p>Use the product responsibly and do not attempt to abuse or disrupt the service.</p>
+        <p>We may update these terms as the product evolves.</p>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
