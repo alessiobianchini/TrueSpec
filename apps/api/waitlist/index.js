@@ -1,4 +1,3 @@
-const { app } = require("@azure/functions");
 const { TableClient, TableServiceClient } = require("@azure/data-tables");
 
 const TABLE_NAME = process.env.WAITLIST_TABLE_NAME || "waitlist";
@@ -44,19 +43,69 @@ async function ensureTable() {
   return tableReady;
 }
 
-async function waitlist(request, context) {
-  if (request.method !== "POST") {
-    return { status: 405 };
+function parseEmailFromString(value) {
+  if (!value) {
+    return null;
   }
 
-  const body = await request.formData();
-  const email = body.get("email")?.toString().trim().toLowerCase();
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  if (trimmed.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (parsed && typeof parsed === "object" && parsed.email) {
+        return parsed.email;
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+
+  const params = new URLSearchParams(trimmed);
+  return params.get("email");
+}
+
+function getEmail(req) {
+  if (req?.body) {
+    if (typeof req.body === "string") {
+      const fromString = parseEmailFromString(req.body);
+      if (fromString) {
+        return fromString;
+      }
+    } else if (Buffer.isBuffer(req.body)) {
+      const fromBuffer = parseEmailFromString(req.body.toString("utf8"));
+      if (fromBuffer) {
+        return fromBuffer;
+      }
+    } else if (typeof req.body === "object" && req.body.email) {
+      return req.body.email;
+    }
+  }
+
+  if (req?.query?.email) {
+    return req.query.email;
+  }
+
+  return null;
+}
+
+module.exports = async function (context, req) {
+  if (req.method !== "POST") {
+    context.res = { status: 405 };
+    return;
+  }
+
+  const email = getEmail(req)?.toString().trim().toLowerCase();
 
   if (!email || !email.includes("@")) {
-    return {
+    context.res = {
       status: 400,
       body: "Invalid email",
     };
+    return;
   }
 
   try {
@@ -74,25 +123,20 @@ async function waitlist(request, context) {
   } catch (error) {
     const status = error?.statusCode;
     if (status !== 409) {
-      context.error("Waitlist insert failed", error);
-      return {
+      context.log.error("Waitlist insert failed", error);
+      context.res = {
         status: 500,
         body: "Server error",
       };
+      return;
     }
   }
 
-  return {
+  context.res = {
     status: 200,
     headers: {
       "Content-Type": "text/plain",
     },
     body: "OK",
   };
-}
-
-app.http("waitlist", {
-  methods: ["POST"],
-  authLevel: "anonymous",
-  handler: waitlist,
-});
+};
