@@ -148,13 +148,20 @@ module.exports = async function (context, req) {
     const client = getTableClient();
     const rowKey = encodeURIComponent(email);
 
-    await client.createEntity({
-      partitionKey: "waitlist",
-      rowKey,
-      email,
-      createdAt: new Date().toISOString(),
-      source: "landing",
-    });
+    try {
+      await client.createEntity({
+        partitionKey: "waitlist",
+        rowKey,
+        email,
+        createdAt: new Date().toISOString(),
+        source: "landing",
+      });
+    } catch (error) {
+      const status = error?.statusCode;
+      if (status !== 409) {
+        throw error;
+      }
+    }
 
     context.res = {
       status: 200,
