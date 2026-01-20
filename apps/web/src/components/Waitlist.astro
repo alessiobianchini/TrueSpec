@@ -53,6 +53,14 @@
       status.textContent = message;
       status.dataset.state = state;
     };
+    const track = (state) => {
+      if (typeof window.truespecTrack === "function") {
+        window.truespecTrack("waitlist_submit", {
+          status: state,
+          source: "waitlist_form",
+        });
+      }
+    };
 
     setStatus("", "idle");
 
@@ -83,8 +91,10 @@
 
         form.reset();
         setStatus("Thanks. You are on the list.", "success");
+        track("success");
       } catch (error) {
         setStatus("Something went wrong. Please try again.", "error");
+        track("error");
       } finally {
         if (button instanceof HTMLButtonElement) {
           button.disabled = false;
