@@ -4,10 +4,12 @@
 
 :root {
   color-scheme: dark;
+  --nav-height: 80px;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-height);
 }
 
 body {
@@ -53,24 +55,27 @@ textarea {
   font-family: inherit;
 }
 
-[data-reveal] {
+.reveal-ready [data-reveal] {
   opacity: 0;
-  transform: translateY(16px);
-  animation: reveal 0.7s ease forwards;
-  animation-delay: var(--delay, 0s);
+  transform: translateY(24px) scale(0.98);
+  transition: opacity 650ms ease, transform 650ms ease;
+  transition-delay: var(--delay, 0s);
+  will-change: opacity, transform;
 }
 
-@keyframes reveal {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.reveal-ready [data-reveal].reveal-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
-    animation: none;
+  .reveal-ready [data-reveal] {
     opacity: 1;
     transform: none;
+    transition: none;
   }
+}
+
+.site-main {
+  padding-top: var(--nav-height);
 }

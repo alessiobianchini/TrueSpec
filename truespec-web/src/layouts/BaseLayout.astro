@@ -1,4 +1,6 @@
 ---
+import "../styles/global.css";
+
 const {
   title = "TrueSpec - Keep your API docs honest",
   description = "Detect drift between your code and your OpenAPI/Swagger specs. Catch breaking changes before they hit production.",
@@ -36,11 +38,37 @@ const {
       rel="stylesheet"
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body class="min-h-screen text-base-content">
-    <main class="min-h-screen">
+    <main class="min-h-screen site-main">
       <slot />
     </main>
+    <script>
+      document.documentElement.classList.add("reveal-ready");
+      const revealItems = document.querySelectorAll("[data-reveal]");
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (revealItems.length === 0) {
+        // Nothing to reveal.
+      } else if (prefersReduced) {
+        revealItems.forEach((item) => item.classList.add("reveal-in"));
+      } else if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries, activeObserver) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("reveal-in");
+                activeObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
+        );
+
+        revealItems.forEach((item) => observer.observe(item));
+      } else {
+        revealItems.forEach((item) => item.classList.add("reveal-in"));
+      }
+    </script>
   </body>
 </html>

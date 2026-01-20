@@ -1,0 +1,139 @@
+---
+import Logo from "./Logo.astro";
+---
+
+<div class="fixed left-0 right-0 top-0 z-30 w-full border-b border-base-300/60 bg-base-100/70 backdrop-blur" data-site-nav>
+  <div class="mx-auto w-full max-w-6xl px-4">
+    <div class="navbar px-0 py-2">
+      <div class="navbar-start gap-3">
+        <div class="relative md:hidden">
+          <button
+            type="button"
+            class="btn btn-ghost btn-circle"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            data-menu-toggle
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div
+            id="mobile-menu"
+            class="mobile-menu absolute left-0 mt-3 w-60 rounded-box border border-base-300 bg-base-200 p-2 shadow"
+            data-menu
+            aria-hidden="true"
+          >
+            <ul class="menu menu-sm">
+              <li><a href="#how">How it works</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#signal">Why TrueSpec</a></li>
+              <li><a href="#waitlist">Join the waitlist</a></li>
+            </ul>
+          </div>
+        </div>
+        <Logo size={38} />
+        <span class="badge badge-outline text-xs hidden sm:inline-flex">Spec drift</span>
+      </div>
+      <div class="navbar-center hidden md:flex">
+        <ul class="menu menu-horizontal px-1 text-sm">
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#signal">Why TrueSpec</a></li>
+          <li><a href="#waitlist">Waitlist</a></li>
+        </ul>
+      </div>
+      <div class="navbar-end">
+        <a class="btn btn-sm btn-outline hidden sm:inline-flex" href="#waitlist">Early access</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const nav = document.querySelector("[data-site-nav]");
+  if (nav instanceof HTMLElement) {
+    const toggle = nav.querySelector("[data-menu-toggle]");
+    const menu = nav.querySelector("[data-menu]");
+    const setNavHeight = () => {
+      const height = nav.getBoundingClientRect().height;
+      document.documentElement.style.setProperty("--nav-height", `${height}px`);
+    };
+
+    const closeMenu = () => {
+      if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) return;
+      toggle.setAttribute("aria-expanded", "false");
+      menu.classList.remove("is-open");
+      menu.setAttribute("aria-hidden", "true");
+    };
+
+    const openMenu = () => {
+      if (!(toggle instanceof HTMLButtonElement) || !(menu instanceof HTMLElement)) return;
+      toggle.setAttribute("aria-expanded", "true");
+      menu.classList.add("is-open");
+      menu.setAttribute("aria-hidden", "false");
+    };
+
+    if (toggle instanceof HTMLButtonElement && menu instanceof HTMLElement) {
+      setNavHeight();
+      window.addEventListener("resize", setNavHeight);
+      window.addEventListener("load", setNavHeight);
+
+      toggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (menu.classList.contains("is-open")) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!nav.contains(event.target)) {
+          closeMenu();
+        }
+      });
+
+      menu.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target instanceof HTMLAnchorElement) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+    }
+  }
+</script>
+
+<style>
+  .mobile-menu {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    transform-origin: top left;
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu {
+      transition: none;
+    }
+  }
+</style>
