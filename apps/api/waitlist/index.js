@@ -93,22 +93,25 @@ function getEmail(req) {
 }
 
 module.exports = async function (context, req) {
-  if (req.method !== "POST") {
-    context.res = { status: 405 };
-    return;
-  }
-
-  const email = getEmail(req)?.toString().trim().toLowerCase();
-
-  if (!email || !email.includes("@")) {
-    context.res = {
-      status: 400,
-      body: "Invalid email",
-    };
-    return;
-  }
+  const debug = /^(1|true)$/i.test(process.env.WAITLIST_DEBUG || "");
 
   try {
+    if (req.method !== "POST") {
+      context.res = { status: 405 };
+      return;
+    }
+
+    const rawEmail = getEmail(req);
+    const email = rawEmail ? rawEmail.toString().trim().toLowerCase() : "";
+
+    if (!email || !email.includes("@")) {
+      context.res = {
+        status: 400,
+        body: "Invalid email",
+      };
+      return;
+    }
+
     await ensureTable();
     const client = getTableClient();
     const rowKey = encodeURIComponent(email);
@@ -120,23 +123,19 @@ module.exports = async function (context, req) {
       createdAt: new Date().toISOString(),
       source: "landing",
     });
-  } catch (error) {
-    const status = error?.statusCode;
-    if (status !== 409) {
-      context.log.error("Waitlist insert failed", error);
-      context.res = {
-        status: 500,
-        body: "Server error",
-      };
-      return;
-    }
-  }
 
-  context.res = {
-    status: 200,
-    headers: {
-      "Content-Type": "text/plain",
-    },
-    body: "OK",
-  };
+    context.res = {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain",
+      },
+      body: "OK",
+    };
+  } catch (error) {
+    context.log.error("Waitlist request failed", error);
+    context.res = {
+      status: 500,
+      body: debug ? String(error?.message || "Server error") : "Server error",
+    };
+  }
 };
