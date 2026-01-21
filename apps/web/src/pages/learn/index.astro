@@ -1,0 +1,93 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import SiteNav from "../../components/SiteNav.astro";
+---
+
+<BaseLayout
+  title="TrueSpec - Learn"
+  description="Guides and checklists for keeping OpenAPI specs aligned with code."
+  canonical="https://truespec-app.com/learn"
+>
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-5xl px-4">
+      <div class="max-w-2xl" data-reveal style="--delay:0s">
+        <p class="text-xs uppercase tracking-[0.3em] text-base-content/50 accent-gradient">Learn</p>
+        <h1 class="mt-3 text-3xl font-semibold md:text-4xl">
+          Spec drift resources for API teams
+        </h1>
+        <p class="mt-4 text-base-content/70">
+          Practical guides and checklists for shipping API changes without breaking clients.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.05s">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Guide</p>
+            <h2 class="card-title text-2xl">
+              <a class="link link-hover" href="/learn/spec-drift-101">
+                Spec drift 101: how it starts and how to stop it
+              </a>
+            </h2>
+            <p class="text-base-content/70">
+              Learn the hidden sources of drift and the signals to catch breaking changes early.
+            </p>
+            <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-base-content/50">
+              <span>6 min read</span>
+              <span class="text-base-content/30">•</span>
+              <span>Updated Jan 2026</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.1s">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Checklist</p>
+            <h2 class="card-title text-2xl">
+              <a class="link link-hover" href="/learn/api-change-checklist">
+                The API change checklist for every PR review
+              </a>
+            </h2>
+            <p class="text-base-content/70">
+              A lightweight checklist for reviewers to spot contract changes before merge.
+            </p>
+            <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-base-content/50">
+              <span>5 min read</span>
+              <span class="text-base-content/30">•</span>
+              <span>Updated Jan 2026</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.15s">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">How-to</p>
+            <h2 class="card-title text-2xl">
+              <a class="link link-hover" href="/learn/openapi-ci-guardrails">
+                CI guardrails for OpenAPI changes with GitHub Actions
+              </a>
+            </h2>
+            <p class="text-base-content/70">
+              A step-by-step flow to add spec drift checks to your CI pipeline.
+            </p>
+            <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-base-content/50">
+              <span>7 min read</span>
+              <span class="text-base-content/30">•</span>
+              <span>Updated Jan 2026</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="mt-12 flex flex-wrap items-center gap-3">
+        <a class="btn btn-primary" href="/#waitlist">Join the waitlist</a>
+        <a class="btn btn-ghost" href="/#use-cases">See use cases</a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>

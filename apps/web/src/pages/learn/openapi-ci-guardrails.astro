@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import SiteNav from "../../components/SiteNav.astro";
+---
+
+<BaseLayout
+  title="CI guardrails for OpenAPI changes - TrueSpec"
+  description="A step-by-step flow to add OpenAPI contract checks to GitHub Actions."
+  canonical="https://truespec-app.com/learn/openapi-ci-guardrails"
+>
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-3xl px-4">
+      <a class="text-sm text-base-content/60 link link-hover" href="/learn">Back to Learn</a>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em] text-base-content/50">
+        <span class="badge badge-outline accent-badge">How-to</span>
+        <span>7 min read</span>
+        <span class="text-base-content/30">•</span>
+        <span>Updated Jan 2026</span>
+      </div>
+
+      <h1 class="mt-4 text-3xl font-semibold md:text-4xl">
+        CI guardrails for OpenAPI changes with GitHub Actions
+      </h1>
+      <p class="mt-4 text-base-content/70">
+        The fastest way to stop spec drift is to add a contract check to every pull request. This
+        guide shows the flow and a starter workflow you can adapt.
+      </p>
+
+      <div class="mt-8 space-y-8 text-base-content/70">
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">Step 1: keep the spec in the repo</h2>
+          <p class="mt-2">
+            The OpenAPI document must live in the same repo as the service so changes stay visible.
+            Store it in a predictable path, like <span class="font-mono text-xs">/openapi.yaml</span>.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">Step 2: run checks on pull requests</h2>
+          <p class="mt-2">
+            The goal is simple: diff the spec against the code and flag breaking changes before
+            merge. Run this on every PR to keep the review signal tight.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">Step 3: share the report</h2>
+          <p class="mt-2">
+            Your reviewers should see a short summary with severity and affected endpoints. That
+            keeps the discussion focused on risky diffs.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 card border border-base-300 bg-base-200/60">
+        <div class="card-body gap-3">
+          <h3 class="text-lg font-semibold">Starter GitHub Actions workflow</h3>
+          <p class="text-base-content/70">
+            TrueSpec Action is in early access. Use this as a placeholder and swap in the public
+            action once your access is approved.
+          </p>
+          <div class="mockup-code text-xs">
+            <pre data-prefix="$"><code>name: api-contract</code></pre>
+            <pre data-prefix="$"><code>on: [pull_request]</code></pre>
+            <pre data-prefix="$"><code>jobs:</code></pre>
+            <pre data-prefix="$"><code>  drift:</code></pre>
+            <pre data-prefix="$"><code>    runs-on: ubuntu-latest</code></pre>
+            <pre data-prefix="$"><code>    steps:</code></pre>
+            <pre data-prefix="$"><code>      - uses: actions/checkout@v4</code></pre>
+            <pre data-prefix="$"><code>      - uses: truespec/action@v0</code></pre>
+            <pre data-prefix="$"><code>        with:</code></pre>
+            <pre data-prefix="$"><code>          spec-path: openapi.yaml</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10 card border border-base-300 bg-base-200/60">
+        <div class="card-body gap-3">
+          <h3 class="text-lg font-semibold">Request early access</h3>
+          <p class="text-base-content/70">
+            We are onboarding teams in batches. Join the waitlist and we will share the Action
+            repo and install steps as soon as you are approved.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a class="btn btn-primary" href="/#waitlist">Join the waitlist</a>
+            <a class="btn btn-ghost" href="/learn/api-change-checklist">PR checklist</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>

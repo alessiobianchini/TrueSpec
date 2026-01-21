@@ -1,0 +1,101 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import SiteNav from "../../components/SiteNav.astro";
+---
+
+<BaseLayout
+  title="Spec drift 101 - TrueSpec"
+  description="Learn how API spec drift starts, the risks it creates, and the guardrails that stop it."
+  canonical="https://truespec-app.com/learn/spec-drift-101"
+>
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-3xl px-4">
+      <a class="text-sm text-base-content/60 link link-hover" href="/learn">Back to Learn</a>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em] text-base-content/50">
+        <span class="badge badge-outline accent-badge">Guide</span>
+        <span>6 min read</span>
+        <span class="text-base-content/30">•</span>
+        <span>Updated Jan 2026</span>
+      </div>
+
+      <h1 class="mt-4 text-3xl font-semibold md:text-4xl">
+        Spec drift 101: how it starts and how to stop it
+      </h1>
+      <p class="mt-4 text-base-content/70">
+        Spec drift happens when OpenAPI and implementation move out of sync. It is one of the
+        fastest ways to ship breaking changes without noticing until customers feel it.
+      </p>
+
+      <div class="mt-8 space-y-8 text-base-content/70">
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">How drift starts</h2>
+          <p class="mt-2">
+            Drift is rarely a single mistake. It is a pattern: teams update code, docs, and schemas
+            at different speeds, and the gaps pile up.
+          </p>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Spec updated in a separate PR or skipped during a hotfix.</li>
+            <li>Multiple services share one API contract with no single owner.</li>
+            <li>Generated specs fall behind manual code changes.</li>
+            <li>Breaking changes are hidden inside refactors or response cleanup.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">What drift breaks</h2>
+          <p class="mt-2">
+            The cost of drift is a release that looks safe on paper but fails in production.
+          </p>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Clients break after fields disappear or enums change.</li>
+            <li>SDKs and docs go stale, creating support tickets.</li>
+            <li>Review cycles slow down because no one trusts the contract.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">Signals to watch in PRs</h2>
+          <p class="mt-2">These are the changes that quietly turn into incidents:</p>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Removing endpoints or response fields.</li>
+            <li>Changing required parameters or request schemas.</li>
+            <li>Swapping status codes or error payloads.</li>
+            <li>Adding new authentication or rate limits.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">How to stop it</h2>
+          <p class="mt-2">
+            The fix is a simple guardrail: diff the spec against the code every PR and surface the
+            risky changes early.
+          </p>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Automate contract checks in CI and block breaking changes.</li>
+            <li>Make one team accountable for the spec and the service.</li>
+            <li>Require a versioning plan for any change that can break clients.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-10 card border border-base-300 bg-base-200/60">
+        <div class="card-body gap-3">
+          <h3 class="text-lg font-semibold">Want automated drift reports?</h3>
+          <p class="text-base-content/70">
+            TrueSpec highlights breaking diffs before merge so teams ship without surprises.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a class="btn btn-primary" href="/#waitlist">Join the waitlist</a>
+            <a class="btn btn-ghost" href="/#features">See features</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>

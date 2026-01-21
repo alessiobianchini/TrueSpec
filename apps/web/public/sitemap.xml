@@ -4,6 +4,18 @@
     <loc>https://truespec-app.com/</loc>
   </url>
   <url>
+    <loc>https://truespec-app.com/learn</loc>
+  </url>
+  <url>
+    <loc>https://truespec-app.com/learn/spec-drift-101</loc>
+  </url>
+  <url>
+    <loc>https://truespec-app.com/learn/api-change-checklist</loc>
+  </url>
+  <url>
+    <loc>https://truespec-app.com/learn/openapi-ci-guardrails</loc>
+  </url>
+  <url>
     <loc>https://truespec-app.com/privacy</loc>
   </url>
   <url>

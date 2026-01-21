@@ -1,0 +1,24 @@
+name: "TrueSpec API Contract Check"
+description: "Detect OpenAPI spec drift in CI (early access)"
+author: "TrueSpec"
+branding:
+  icon: "check-circle"
+  color: "blue"
+inputs:
+  spec-path:
+    description: "Path to the OpenAPI file"
+    required: true
+  fail-on:
+    description: "breaking | warning | none"
+    required: false
+    default: "breaking"
+outputs:
+  summary:
+    description: "Short summary of the run"
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        echo "::notice::TrueSpec action is in early access. Join the waitlist for access."
+        echo "summary=waitlist-only" >> "$GITHUB_OUTPUT"
+      shell: bash

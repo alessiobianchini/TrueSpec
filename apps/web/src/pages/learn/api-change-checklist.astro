@@ -1,0 +1,96 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import SiteNav from "../../components/SiteNav.astro";
+---
+
+<BaseLayout
+  title="API change checklist - TrueSpec"
+  description="A practical PR checklist to review API changes without missing breaking updates."
+  canonical="https://truespec-app.com/learn/api-change-checklist"
+>
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-3xl px-4">
+      <a class="text-sm text-base-content/60 link link-hover" href="/learn">Back to Learn</a>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.3em] text-base-content/50">
+        <span class="badge badge-outline accent-badge">Checklist</span>
+        <span>5 min read</span>
+        <span class="text-base-content/30">•</span>
+        <span>Updated Jan 2026</span>
+      </div>
+
+      <h1 class="mt-4 text-3xl font-semibold md:text-4xl">
+        The API change checklist for every PR review
+      </h1>
+      <p class="mt-4 text-base-content/70">
+        Most API regressions are obvious in hindsight. Use this short checklist to catch
+        breaking changes before they hit main.
+      </p>
+
+      <div class="mt-8 space-y-8 text-base-content/70">
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">1. Scope the change</h2>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Which endpoints are touched?</li>
+            <li>Is the change additive, or does it remove or rename fields?</li>
+            <li>Is there a versioning plan if clients need time to migrate?</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">2. Validate request contracts</h2>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Are new required parameters introduced?</li>
+            <li>Do default values change behavior?</li>
+            <li>Are enums or validation rules tightened?</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">3. Validate response contracts</h2>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Are any response fields removed or renamed?</li>
+            <li>Do status codes or error schemas change?</li>
+            <li>Do pagination or sorting defaults change?</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">4. Documentation and examples</h2>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Is the OpenAPI spec updated in the same PR?</li>
+            <li>Do docs and examples match the new behavior?</li>
+            <li>Is there a migration note for existing clients?</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-xl font-semibold text-base-content">5. Rollout safety</h2>
+          <ul class="mt-3 list-disc space-y-2 pl-5">
+            <li>Is the change behind a flag or staged rollout?</li>
+            <li>Are alerts in place for unexpected client errors?</li>
+            <li>Is there a rollback plan if issues appear?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-10 card border border-base-300 bg-base-200/60">
+        <div class="card-body gap-3">
+          <h3 class="text-lg font-semibold">Make the checklist automatic</h3>
+          <p class="text-base-content/70">
+            TrueSpec turns the checklist into a CI report so reviewers see breaking changes fast.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a class="btn btn-primary" href="/#waitlist">Join the waitlist</a>
+            <a class="btn btn-ghost" href="/learn/openapi-ci-guardrails">See CI guardrails</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
