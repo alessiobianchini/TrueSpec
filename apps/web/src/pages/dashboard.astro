@@ -39,7 +39,7 @@ import SiteNav from "../components/SiteNav.astro";
           </form>
           <div class="flex flex-wrap items-center gap-3 text-xs text-base-content/50">
             <span>Endpoint: /api/waitlist?summary=1</span>
-            <span class="text-base-content/30">•</span>
+            <span class="text-base-content/30">&middot;</span>
             <span data-updated>Not loaded</span>
           </div>
           <p class="text-sm text-base-content/60 min-h-[1.3em]" data-dashboard-status></p>
@@ -67,6 +67,40 @@ import SiteNav from "../components/SiteNav.astro";
             <p class="text-3xl font-semibold" data-metric="last7d">--</p>
             <p class="text-xs text-base-content/50">New signups</p>
           </div>
+        </div>
+      </div>
+
+      <div class="mt-8 card border border-base-300 bg-base-200/70">
+        <div class="card-body gap-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">GitHub Action repo</p>
+              <h2 class="text-lg font-semibold">TrueSpecAction</h2>
+            </div>
+            <a
+              class="link link-hover text-sm"
+              href="https://github.com/alessiobianchini/TrueSpecAction"
+              target="_blank"
+              rel="noopener"
+            >
+              View repo
+            </a>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl border border-base-300/70 bg-base-100/60 p-4">
+              <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Stars</p>
+              <p class="text-2xl font-semibold" data-github="stars">--</p>
+            </div>
+            <div class="rounded-2xl border border-base-300/70 bg-base-100/60 p-4">
+              <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Forks</p>
+              <p class="text-2xl font-semibold" data-github="forks">--</p>
+            </div>
+            <div class="rounded-2xl border border-base-300/70 bg-base-100/60 p-4">
+              <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Open issues</p>
+              <p class="text-2xl font-semibold" data-github="issues">--</p>
+            </div>
+          </div>
+          <p class="text-xs text-base-content/50" data-github-status>Not loaded</p>
         </div>
       </div>
 
@@ -118,8 +152,14 @@ import SiteNav from "../components/SiteNav.astro";
     const metricTotal = document.querySelector('[data-metric="total"]');
     const metric24h = document.querySelector('[data-metric="last24h"]');
     const metric7d = document.querySelector('[data-metric="last7d"]');
+    const githubStatus = document.querySelector("[data-github-status]");
+    const githubStars = document.querySelector('[data-github="stars"]');
+    const githubForks = document.querySelector('[data-github="forks"]');
+    const githubIssues = document.querySelector('[data-github="issues"]');
 
     const tokenKey = "truespec_admin_token";
+    const githubRepo = "alessiobianchini/TrueSpecAction";
+    const githubEndpoint = `https://api.github.com/repos/${githubRepo}`;
 
     const setStatus = (message, state = "idle") => {
       if (!statusEl) return;
@@ -135,8 +175,17 @@ import SiteNav from "../components/SiteNav.astro";
       el.textContent = value ?? "--";
     };
 
+    const setGithubStatus = (message, state = "idle") => {
+      if (!githubStatus) return;
+      githubStatus.textContent = message;
+      githubStatus.classList.remove("text-error", "text-success", "text-warning");
+      if (state === "error") githubStatus.classList.add("text-error");
+      if (state === "success") githubStatus.classList.add("text-success");
+      if (state === "loading") githubStatus.classList.add("text-warning");
+    };
+
     const formatDate = (value) => {
-      if (!value) return "—";
+      if (!value) return "--";
       const parsed = Date.parse(value);
       if (Number.isNaN(parsed)) return String(value);
       return new Date(parsed).toLocaleString();
@@ -174,8 +223,8 @@ import SiteNav from "../components/SiteNav.astro";
       items.forEach((item) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-          <td>${item.email || "—"}</td>
-          <td>${item.source || "—"}</td>
+          <td>${item.email || "--"}</td>
+          <td>${item.source || "--"}</td>
           <td>${formatDate(item.createdAt || item.timestamp)}</td>
         `;
         recentBody.appendChild(row);
@@ -189,6 +238,23 @@ import SiteNav from "../components/SiteNav.astro";
       renderSources({});
       renderRecent([]);
       if (updatedEl) updatedEl.textContent = "Not loaded";
+    };
+
+    const loadGithubStats = async () => {
+      setGithubStatus("Loading GitHub stats...", "loading");
+      try {
+        const response = await fetch(githubEndpoint);
+        if (!response.ok) {
+          throw new Error(`GitHub API error (${response.status})`);
+        }
+        const data = await response.json();
+        setMetric(githubStars, data.stargazers_count ?? "--");
+        setMetric(githubForks, data.forks_count ?? "--");
+        setMetric(githubIssues, data.open_issues_count ?? "--");
+        setGithubStatus(`Updated ${formatDate(data.updated_at)}`, "success");
+      } catch (error) {
+        setGithubStatus(error?.message || "Failed to load GitHub stats.", "error");
+      }
     };
 
     const loadSummary = async (token) => {
@@ -219,6 +285,8 @@ import SiteNav from "../components/SiteNav.astro";
         setStatus(error?.message || "Failed to load metrics.", "error");
       }
     };
+
+    loadGithubStats();
 
     if (form instanceof HTMLFormElement && tokenInput instanceof HTMLInputElement) {
       const storedToken = sessionStorage.getItem(tokenKey);
