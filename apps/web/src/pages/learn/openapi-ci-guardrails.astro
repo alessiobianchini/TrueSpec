@@ -60,8 +60,7 @@ import SiteNav from "../../components/SiteNav.astro";
         <div class="card-body gap-3">
           <h3 class="text-lg font-semibold">Starter GitHub Actions workflow</h3>
           <p class="text-base-content/70">
-            TrueSpec Action is in early access. Use this as a placeholder and swap in the public
-            action once your access is approved.
+            This workflow calls the TrueSpec reports API and writes a summary into the PR checks tab.
           </p>
           <div class="mockup-code text-xs">
             <pre data-prefix="$"><code>name: api-contract</code></pre>
@@ -71,10 +70,19 @@ import SiteNav from "../../components/SiteNav.astro";
             <pre data-prefix="$"><code>    runs-on: ubuntu-latest</code></pre>
             <pre data-prefix="$"><code>    steps:</code></pre>
             <pre data-prefix="$"><code>      - uses: actions/checkout@v4</code></pre>
+            <pre data-prefix="$"><code>        with:</code></pre>
+            <pre data-prefix="$"><code>          fetch-depth: 0</code></pre>
+            <pre data-prefix="$"><code>      - uses: actions/setup-node@v4</code></pre>
+            <pre data-prefix="$"><code>        with:</code></pre>
+            <pre data-prefix="$"><code>          node-version: 20</code></pre>
             <pre data-prefix="$"><code>      - uses: alessiobianchini/TrueSpecAction@v0</code></pre>
             <pre data-prefix="$"><code>        with:</code></pre>
             <pre data-prefix="$"><code>          spec-path: openapi.yaml</code></pre>
+            <pre data-prefix="$"><code>          reports-token: $&#123;&#123; secrets.TRUESPEC_REPORTS_TOKEN &#125;&#125;</code></pre>
           </div>
+          <p class="text-xs text-base-content/60">
+            Add <span class="font-mono">TRUESPEC_REPORTS_TOKEN</span> as a repository secret.
+          </p>
         </div>
       </div>
 
@@ -82,8 +90,8 @@ import SiteNav from "../../components/SiteNav.astro";
         <div class="card-body gap-3">
           <h3 class="text-lg font-semibold">Request early access</h3>
           <p class="text-base-content/70">
-            We are onboarding teams in batches. Join the waitlist and we will share the Action
-            repo and install steps as soon as you are approved.
+            We are onboarding teams in batches. Join the waitlist and we will share new capabilities
+            as soon as they are ready.
           </p>
           <div class="flex flex-wrap gap-3">
             <a class="btn btn-primary" href="/#waitlist">Join the waitlist</a>
