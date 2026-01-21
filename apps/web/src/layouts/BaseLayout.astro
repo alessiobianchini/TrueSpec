@@ -6,6 +6,7 @@ const {
   description = "Detect drift between your code and your OpenAPI specs. Catch breaking changes before they hit production.",
   canonical = "https://truespec-app.com/",
   ogImage = "/brand/og.svg",
+  robots,
 } = Astro.props;
 
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
@@ -20,6 +21,7 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_PROJECT_ID;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {robots && <meta name="robots" content={robots} />}
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

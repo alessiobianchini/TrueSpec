@@ -1,0 +1,253 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import SiteNav from "../components/SiteNav.astro";
+---
+
+<BaseLayout
+  title="TrueSpec - Dashboard"
+  description="Internal metrics dashboard for waitlist signals."
+  canonical="https://truespec-app.com/dashboard"
+  robots="noindex,nofollow"
+>
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="max-w-2xl" data-reveal style="--delay:0s">
+        <p class="text-xs uppercase tracking-[0.3em] text-base-content/50 accent-gradient">Ops</p>
+        <h1 class="mt-3 text-3xl font-semibold md:text-4xl">Waitlist dashboard</h1>
+        <p class="mt-4 text-base-content/70">
+          Internal view of early-access demand. Enter the admin token to load metrics.
+        </p>
+      </div>
+
+      <div class="mt-8 card border border-base-300 bg-base-200/70">
+        <div class="card-body gap-4">
+          <form class="flex flex-wrap items-center gap-3" data-dashboard-form>
+            <input
+              class="input input-bordered flex-1 min-w-[220px]"
+              type="password"
+              name="token"
+              placeholder="Admin token"
+              autocomplete="current-password"
+              data-dashboard-token
+              required
+            />
+            <button class="btn btn-primary" type="submit">Load metrics</button>
+            <button class="btn btn-ghost" type="button" data-clear-token>Clear</button>
+          </form>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-base-content/50">
+            <span>Endpoint: /api/waitlist?summary=1</span>
+            <span class="text-base-content/30">•</span>
+            <span data-updated>Not loaded</span>
+          </div>
+          <p class="text-sm text-base-content/60 min-h-[1.3em]" data-dashboard-status></p>
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Total signups</p>
+            <p class="text-3xl font-semibold" data-metric="total">--</p>
+            <p class="text-xs text-base-content/50">All time</p>
+          </div>
+        </div>
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Last 24 hours</p>
+            <p class="text-3xl font-semibold" data-metric="last24h">--</p>
+            <p class="text-xs text-base-content/50">New signups</p>
+          </div>
+        </div>
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Last 7 days</p>
+            <p class="text-3xl font-semibold" data-metric="last7d">--</p>
+            <p class="text-xs text-base-content/50">New signups</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10 grid gap-6 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)]">
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <h2 class="text-lg font-semibold">Sources</h2>
+            <ul class="mt-3 space-y-2 text-sm text-base-content/70" data-source-list>
+              <li class="text-base-content/50">No data yet.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <h2 class="text-lg font-semibold">Recent signups</h2>
+            <div class="mt-3 overflow-x-auto">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Source</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody data-recent-body>
+                  <tr>
+                    <td colspan="3" class="text-base-content/50">No data yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+
+  <script type="module">
+    const form = document.querySelector("[data-dashboard-form]");
+    const tokenInput = document.querySelector("[data-dashboard-token]");
+    const statusEl = document.querySelector("[data-dashboard-status]");
+    const clearBtn = document.querySelector("[data-clear-token]");
+    const updatedEl = document.querySelector("[data-updated]");
+    const sourceList = document.querySelector("[data-source-list]");
+    const recentBody = document.querySelector("[data-recent-body]");
+    const metricTotal = document.querySelector('[data-metric="total"]');
+    const metric24h = document.querySelector('[data-metric="last24h"]');
+    const metric7d = document.querySelector('[data-metric="last7d"]');
+
+    const tokenKey = "truespec_admin_token";
+
+    const setStatus = (message, state = "idle") => {
+      if (!statusEl) return;
+      statusEl.textContent = message;
+      statusEl.classList.remove("text-error", "text-success", "text-warning");
+      if (state === "error") statusEl.classList.add("text-error");
+      if (state === "success") statusEl.classList.add("text-success");
+      if (state === "loading") statusEl.classList.add("text-warning");
+    };
+
+    const setMetric = (el, value) => {
+      if (!el) return;
+      el.textContent = value ?? "--";
+    };
+
+    const formatDate = (value) => {
+      if (!value) return "—";
+      const parsed = Date.parse(value);
+      if (Number.isNaN(parsed)) return String(value);
+      return new Date(parsed).toLocaleString();
+    };
+
+    const renderSources = (bySource) => {
+      if (!sourceList) return;
+      sourceList.innerHTML = "";
+      const entries = Object.entries(bySource || {}).sort((a, b) => b[1] - a[1]);
+      if (entries.length === 0) {
+        const li = document.createElement("li");
+        li.className = "text-base-content/50";
+        li.textContent = "No data yet.";
+        sourceList.appendChild(li);
+        return;
+      }
+      entries.forEach(([source, count]) => {
+        const li = document.createElement("li");
+        li.className = "flex items-center justify-between gap-3";
+        li.innerHTML = `<span>${source}</span><span class="text-base-content/50">${count}</span>`;
+        sourceList.appendChild(li);
+      });
+    };
+
+    const renderRecent = (items) => {
+      if (!recentBody) return;
+      recentBody.innerHTML = "";
+      if (!items || items.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = '<td colspan="3" class="text-base-content/50">No data yet.</td>';
+        recentBody.appendChild(row);
+        return;
+      }
+
+      items.forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${item.email || "—"}</td>
+          <td>${item.source || "—"}</td>
+          <td>${formatDate(item.createdAt || item.timestamp)}</td>
+        `;
+        recentBody.appendChild(row);
+      });
+    };
+
+    const resetDashboard = () => {
+      setMetric(metricTotal, "--");
+      setMetric(metric24h, "--");
+      setMetric(metric7d, "--");
+      renderSources({});
+      renderRecent([]);
+      if (updatedEl) updatedEl.textContent = "Not loaded";
+    };
+
+    const loadSummary = async (token) => {
+      setStatus("Loading metrics...", "loading");
+      try {
+        const response = await fetch("/api/waitlist?summary=1", {
+          headers: {
+            "x-waitlist-token": token,
+          },
+        });
+
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || `Request failed (${response.status})`);
+        }
+
+        const data = await response.json();
+        setMetric(metricTotal, data.total ?? "--");
+        setMetric(metric24h, data.last24h ?? "--");
+        setMetric(metric7d, data.last7d ?? "--");
+        renderSources(data.bySource);
+        renderRecent(data.recent);
+        if (updatedEl) {
+          updatedEl.textContent = `Updated ${formatDate(data.generatedAt)}`;
+        }
+        setStatus("Metrics loaded.", "success");
+      } catch (error) {
+        setStatus(error?.message || "Failed to load metrics.", "error");
+      }
+    };
+
+    if (form instanceof HTMLFormElement && tokenInput instanceof HTMLInputElement) {
+      const storedToken = sessionStorage.getItem(tokenKey);
+      if (storedToken) {
+        tokenInput.value = storedToken;
+        loadSummary(storedToken);
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const token = tokenInput.value.trim();
+        if (!token) {
+          setStatus("Enter the admin token first.", "error");
+          return;
+        }
+        sessionStorage.setItem(tokenKey, token);
+        loadSummary(token);
+      });
+    }
+
+    if (clearBtn instanceof HTMLButtonElement) {
+      clearBtn.addEventListener("click", () => {
+        sessionStorage.removeItem(tokenKey);
+        if (tokenInput instanceof HTMLInputElement) {
+          tokenInput.value = "";
+        }
+        resetDashboard();
+        setStatus("Token cleared.", "idle");
+      });
+    }
+  </script>
+</BaseLayout>

@@ -168,6 +168,46 @@ function toOdataString(value) {
   return String(value).replace(/'/g, "''");
 }
 
+function isTruthy(value) {
+  return /^(1|true|yes)$/i.test(String(value || ""));
+}
+
+function parseEntityTime(entity) {
+  const createdAt = entity?.createdAt;
+  if (createdAt) {
+    const parsed = Date.parse(String(createdAt));
+    if (!Number.isNaN(parsed)) {
+      return parsed;
+    }
+  }
+
+  const timestamp = entity?.timestamp || entity?.Timestamp;
+  if (timestamp instanceof Date) {
+    return timestamp.getTime();
+  }
+
+  if (timestamp) {
+    const parsed = Date.parse(String(timestamp));
+    if (!Number.isNaN(parsed)) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+function formatDateValue(value) {
+  if (!value) {
+    return null;
+  }
+
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  return String(value);
+}
+
 module.exports = async function (context, req) {
   const debug = /^(1|true)$/i.test(process.env.WAITLIST_DEBUG || "");
 
@@ -195,11 +235,75 @@ module.exports = async function (context, req) {
 
       await ensureTable();
       const client = getTableClient();
+      const filter = `PartitionKey eq '${toOdataString(TABLE_PARTITION)}'`;
+
+      if (isTruthy(req?.query?.summary)) {
+        const now = Date.now();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const weekMs = 7 * dayMs;
+        const bySource = {};
+        const recent = [];
+
+        let total = 0;
+        let last24h = 0;
+        let last7d = 0;
+
+        const entities = client.listEntities({
+          queryOptions: {
+            filter,
+            select: ["email", "createdAt", "source", "timestamp"],
+          },
+        });
+
+        for await (const entity of entities) {
+          total += 1;
+          const source = entity.source || "unknown";
+          bySource[source] = (bySource[source] || 0) + 1;
+
+          const time = parseEntityTime(entity);
+          if (time) {
+            const age = now - time;
+            if (age <= dayMs) {
+              last24h += 1;
+            }
+            if (age <= weekMs) {
+              last7d += 1;
+            }
+          }
+
+          recent.push({
+            email: entity.email || null,
+            createdAt: formatDateValue(entity.createdAt),
+            source,
+            timestamp: formatDateValue(entity.timestamp || entity.Timestamp),
+            _time: time || 0,
+          });
+        }
+
+        recent.sort((a, b) => (b._time || 0) - (a._time || 0));
+        const trimmed = recent.slice(0, 10).map(({ _time, ...rest }) => rest);
+
+        context.res = {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: {
+            generatedAt: new Date().toISOString(),
+            total,
+            last24h,
+            last7d,
+            bySource,
+            recent: trimmed,
+          },
+        };
+        return;
+      }
+
       const pageSize = normalizePageSize(
         req?.query?.limit || req?.query?.top || req?.query?.pageSize
       );
       const continuationToken = getContinuationToken(req);
-      const filter = `PartitionKey eq '${toOdataString(TABLE_PARTITION)}'`;
 
       const items = [];
       const pages = client.listEntities({
