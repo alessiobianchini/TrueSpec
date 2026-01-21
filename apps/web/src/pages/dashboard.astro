@@ -6,7 +6,7 @@ import SiteNav from "../components/SiteNav.astro";
 
 <BaseLayout
   title="TrueSpec - Dashboard"
-  description="Internal metrics dashboard for waitlist signals."
+  description="Internal metrics dashboard for waitlist signals and drift reports."
   canonical="https://truespec-app.com/dashboard"
   robots="noindex,nofollow"
 >
@@ -16,9 +16,9 @@ import SiteNav from "../components/SiteNav.astro";
     <div class="mx-auto w-full max-w-6xl px-4">
       <div class="max-w-2xl" data-reveal style="--delay:0s">
         <p class="text-xs uppercase tracking-[0.3em] text-base-content/50 accent-gradient">Ops</p>
-        <h1 class="mt-3 text-3xl font-semibold md:text-4xl">Waitlist dashboard</h1>
+        <h1 class="mt-3 text-3xl font-semibold md:text-4xl">Ops dashboard</h1>
         <p class="mt-4 text-base-content/70">
-          Internal view of early-access demand. Enter the admin token to load metrics.
+          Internal view of early-access demand and spec drift reports. Enter the tokens to load data.
         </p>
       </div>
 
@@ -104,6 +104,90 @@ import SiteNav from "../components/SiteNav.astro";
         </div>
       </div>
 
+      <div class="mt-8 card border border-base-300 bg-base-200/70">
+        <div class="card-body gap-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Reports</p>
+              <h2 class="text-lg font-semibold">Spec drift reports</h2>
+              <p class="text-sm text-base-content/60">
+                Load stored diffs from the reports API.
+              </p>
+            </div>
+          </div>
+          <form class="flex flex-wrap items-center gap-3" data-reports-form>
+            <input
+              class="input input-bordered flex-1 min-w-[220px]"
+              type="password"
+              name="reportsToken"
+              placeholder="Reports admin token"
+              autocomplete="current-password"
+              data-reports-token
+              required
+            />
+            <input
+              class="input input-bordered flex-1 min-w-[220px]"
+              type="text"
+              name="reportsRepo"
+              placeholder="owner/repo"
+              autocomplete="off"
+              data-reports-repo
+              required
+            />
+            <button class="btn btn-primary" type="submit">Load reports</button>
+            <button class="btn btn-ghost" type="button" data-reports-clear>Clear</button>
+          </form>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-base-content/50">
+            <span data-reports-endpoint>Endpoint: /api/reports?repo=owner/repo</span>
+            <span class="text-base-content/30">&middot;</span>
+            <span data-reports-updated>Not loaded</span>
+          </div>
+          <p class="text-sm text-base-content/60 min-h-[1.3em]" data-reports-status></p>
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)]">
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <h2 class="text-lg font-semibold">Recent reports</h2>
+            <div class="mt-3 overflow-x-auto">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Created</th>
+                    <th>Repo</th>
+                    <th>Breaking</th>
+                    <th>Warning</th>
+                    <th>Info</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody data-reports-list>
+                  <tr>
+                    <td colspan="6" class="text-base-content/50">No data yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border border-base-300 bg-base-200/60">
+          <div class="card-body">
+            <h2 class="text-lg font-semibold">Report detail</h2>
+            <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-base-content/60">
+              <span class="badge badge-outline" data-report-summary="breaking">Breaking: --</span>
+              <span class="badge badge-outline" data-report-summary="warning">Warning: --</span>
+              <span class="badge badge-outline" data-report-summary="info">Info: --</span>
+              <span class="text-base-content/50" data-report-meta>Pick a report to view details.</span>
+            </div>
+            <div class="mt-4 rounded-2xl border border-base-300/70 bg-base-100/60 p-4">
+              <pre class="text-xs whitespace-pre-wrap font-mono" data-report-markdown>Waiting for a report...</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="mt-10 grid gap-6 lg:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)]">
         <div class="card border border-base-300 bg-base-200/60">
           <div class="card-body">
@@ -156,10 +240,27 @@ import SiteNav from "../components/SiteNav.astro";
     const githubStars = document.querySelector('[data-github="stars"]');
     const githubForks = document.querySelector('[data-github="forks"]');
     const githubIssues = document.querySelector('[data-github="issues"]');
+    const reportsForm = document.querySelector("[data-reports-form]");
+    const reportsTokenInput = document.querySelector("[data-reports-token]");
+    const reportsRepoInput = document.querySelector("[data-reports-repo]");
+    const reportsStatus = document.querySelector("[data-reports-status]");
+    const reportsUpdated = document.querySelector("[data-reports-updated]");
+    const reportsEndpoint = document.querySelector("[data-reports-endpoint]");
+    const reportsList = document.querySelector("[data-reports-list]");
+    const reportsClear = document.querySelector("[data-reports-clear]");
+    const reportMarkdown = document.querySelector("[data-report-markdown]");
+    const reportMeta = document.querySelector("[data-report-meta]");
+    const reportBreaking = document.querySelector('[data-report-summary="breaking"]');
+    const reportWarning = document.querySelector('[data-report-summary="warning"]');
+    const reportInfo = document.querySelector('[data-report-summary="info"]');
 
     const tokenKey = "truespec_admin_token";
+    const reportsTokenKey = "truespec_reports_token";
+    const reportsRepoKey = "truespec_reports_repo";
     const githubRepo = "alessiobianchini/TrueSpecAction";
     const githubEndpoint = `https://api.github.com/repos/${githubRepo}`;
+    let activeReportsToken = "";
+    let activeReportsRepo = "";
 
     const setStatus = (message, state = "idle") => {
       if (!statusEl) return;
@@ -182,6 +283,37 @@ import SiteNav from "../components/SiteNav.astro";
       if (state === "error") githubStatus.classList.add("text-error");
       if (state === "success") githubStatus.classList.add("text-success");
       if (state === "loading") githubStatus.classList.add("text-warning");
+    };
+
+    const setReportsStatus = (message, state = "idle") => {
+      if (!reportsStatus) return;
+      reportsStatus.textContent = message;
+      reportsStatus.classList.remove("text-error", "text-success", "text-warning");
+      if (state === "error") reportsStatus.classList.add("text-error");
+      if (state === "success") reportsStatus.classList.add("text-success");
+      if (state === "loading") reportsStatus.classList.add("text-warning");
+    };
+
+    const setReportBadge = (el, label, value) => {
+      if (!el) return;
+      el.textContent = `${label}: ${value ?? "--"}`;
+    };
+
+    const setReportSummary = (summary) => {
+      setReportBadge(reportBreaking, "Breaking", summary?.breaking);
+      setReportBadge(reportWarning, "Warning", summary?.warning);
+      setReportBadge(reportInfo, "Info", summary?.info);
+    };
+
+    const setReportMeta = (message) => {
+      if (!reportMeta) return;
+      reportMeta.textContent = message;
+    };
+
+    const updateReportsEndpoint = (repo) => {
+      if (!reportsEndpoint) return;
+      const safeRepo = repo || "owner/repo";
+      reportsEndpoint.textContent = `Endpoint: /api/reports?repo=${safeRepo}`;
     };
 
     const formatDate = (value) => {
@@ -231,6 +363,38 @@ import SiteNav from "../components/SiteNav.astro";
       });
     };
 
+    const renderReportsList = (items) => {
+      if (!reportsList) return;
+      reportsList.innerHTML = "";
+      if (!items || items.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = '<td colspan="6" class="text-base-content/50">No data yet.</td>';
+        reportsList.appendChild(row);
+        return;
+      }
+
+      items.forEach((item) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${formatDate(item.createdAt)}</td>
+          <td>${item.repo || "--"}</td>
+          <td>${item.summary?.breaking ?? 0}</td>
+          <td>${item.summary?.warning ?? 0}</td>
+          <td>${item.summary?.info ?? 0}</td>
+          <td><button class="btn btn-xs btn-outline" type="button">View</button></td>
+        `;
+        const button = row.querySelector("button");
+        if (button) {
+          button.addEventListener("click", () => {
+            if (activeReportsToken && item.id) {
+              loadReportDetail(activeReportsToken, item.id);
+            }
+          });
+        }
+        reportsList.appendChild(row);
+      });
+    };
+
     const resetDashboard = () => {
       setMetric(metricTotal, "--");
       setMetric(metric24h, "--");
@@ -238,6 +402,17 @@ import SiteNav from "../components/SiteNav.astro";
       renderSources({});
       renderRecent([]);
       if (updatedEl) updatedEl.textContent = "Not loaded";
+    };
+
+    const resetReports = () => {
+      renderReportsList([]);
+      setReportSummary(null);
+      setReportMeta("Pick a report to view details.");
+      if (reportMarkdown) {
+        reportMarkdown.textContent = "Waiting for a report...";
+      }
+      if (reportsUpdated) reportsUpdated.textContent = "Not loaded";
+      updateReportsEndpoint("");
     };
 
     const loadGithubStats = async () => {
@@ -254,6 +429,41 @@ import SiteNav from "../components/SiteNav.astro";
         setGithubStatus(`Updated ${formatDate(data.updated_at)}`, "success");
       } catch (error) {
         setGithubStatus(error?.message || "Failed to load GitHub stats.", "error");
+      }
+    };
+
+    const loadReportDetail = async (token, reportId) => {
+      if (!reportId) return;
+      setReportMeta("Loading report...");
+      try {
+        const response = await fetch(`/api/reports/${reportId}`, {
+          headers: {
+            "x-report-token": token,
+          },
+        });
+
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || `Request failed (${response.status})`);
+        }
+
+        const data = await response.json();
+        setReportSummary(data.summary);
+        const metaParts = [
+          data.id ? `Report ${data.id}` : null,
+          data.repo ? data.repo : null,
+          data.createdAt ? formatDate(data.createdAt) : null,
+        ].filter(Boolean);
+        setReportMeta(metaParts.join(" · ") || "Report loaded.");
+        if (reportMarkdown) {
+          reportMarkdown.textContent = data.markdown || "No markdown available.";
+        }
+      } catch (error) {
+        setReportMeta("Failed to load report.");
+        if (reportMarkdown) {
+          reportMarkdown.textContent = "Unable to load report details.";
+        }
+        setReportsStatus(error?.message || "Failed to load report.", "error");
       }
     };
 
@@ -286,6 +496,44 @@ import SiteNav from "../components/SiteNav.astro";
       }
     };
 
+    const loadReports = async (token, repo) => {
+      setReportsStatus("Loading reports...", "loading");
+      activeReportsToken = token;
+      activeReportsRepo = repo;
+      updateReportsEndpoint(repo);
+
+      try {
+        const response = await fetch(`/api/reports?repo=${encodeURIComponent(repo)}&limit=20`, {
+          headers: {
+            "x-report-token": token,
+          },
+        });
+
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || `Request failed (${response.status})`);
+        }
+
+        const data = await response.json();
+        renderReportsList(data.items || []);
+        if (reportsUpdated) {
+          reportsUpdated.textContent = `Updated ${formatDate(new Date().toISOString())}`;
+        }
+        setReportsStatus("Reports loaded.", "success");
+        if (data.items && data.items.length > 0) {
+          await loadReportDetail(token, data.items[0].id);
+        } else {
+          setReportSummary(null);
+          setReportMeta("No reports found.");
+          if (reportMarkdown) {
+            reportMarkdown.textContent = "No reports available for this repo.";
+          }
+        }
+      } catch (error) {
+        setReportsStatus(error?.message || "Failed to load reports.", "error");
+      }
+    };
+
     loadGithubStats();
 
     if (form instanceof HTMLFormElement && tokenInput instanceof HTMLInputElement) {
@@ -307,6 +555,38 @@ import SiteNav from "../components/SiteNav.astro";
       });
     }
 
+    if (
+      reportsForm instanceof HTMLFormElement &&
+      reportsTokenInput instanceof HTMLInputElement &&
+      reportsRepoInput instanceof HTMLInputElement
+    ) {
+      const storedToken = sessionStorage.getItem(reportsTokenKey);
+      const storedRepo = sessionStorage.getItem(reportsRepoKey);
+      if (storedToken) {
+        reportsTokenInput.value = storedToken;
+      }
+      if (storedRepo) {
+        reportsRepoInput.value = storedRepo;
+        updateReportsEndpoint(storedRepo);
+      }
+      if (storedToken && storedRepo) {
+        loadReports(storedToken, storedRepo);
+      }
+
+      reportsForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const token = reportsTokenInput.value.trim();
+        const repo = reportsRepoInput.value.trim();
+        if (!token || !repo) {
+          setReportsStatus("Enter token and repo first.", "error");
+          return;
+        }
+        sessionStorage.setItem(reportsTokenKey, token);
+        sessionStorage.setItem(reportsRepoKey, repo);
+        loadReports(token, repo);
+      });
+    }
+
     if (clearBtn instanceof HTMLButtonElement) {
       clearBtn.addEventListener("click", () => {
         sessionStorage.removeItem(tokenKey);
@@ -315,6 +595,21 @@ import SiteNav from "../components/SiteNav.astro";
         }
         resetDashboard();
         setStatus("Token cleared.", "idle");
+      });
+    }
+
+    if (reportsClear instanceof HTMLButtonElement) {
+      reportsClear.addEventListener("click", () => {
+        sessionStorage.removeItem(reportsTokenKey);
+        sessionStorage.removeItem(reportsRepoKey);
+        if (reportsTokenInput instanceof HTMLInputElement) {
+          reportsTokenInput.value = "";
+        }
+        if (reportsRepoInput instanceof HTMLInputElement) {
+          reportsRepoInput.value = "";
+        }
+        resetReports();
+        setReportsStatus("Token cleared.", "idle");
       });
     }
   </script>

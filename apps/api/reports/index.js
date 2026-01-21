@@ -254,10 +254,26 @@ function compareSchema(baseSchema, headSchema, schemaPath, items, ref, visitedBa
   const baseEnum = getEnumValues(baseSchema);
   const headEnum = getEnumValues(headSchema);
   if (baseEnum || headEnum) {
-    const baseValues = baseEnum ? [...baseEnum].sort().join(",") : "";
-    const headValues = headEnum ? [...headEnum].sort().join(",") : "";
-    if (baseValues !== headValues) {
-      addItem(items, "breaking", "schema-enum-changed", `Enum changed at ${schemaPath}`, ref);
+    const baseValues = baseEnum ? [...baseEnum].sort() : [];
+    const headValues = headEnum ? [...headEnum].sort() : [];
+    const removedValues = baseValues.filter((value) => !headEnum?.has(value));
+    const addedValues = headValues.filter((value) => !baseEnum?.has(value));
+    if (removedValues.length > 0 || addedValues.length > 0) {
+      const details = [];
+      if (removedValues.length > 0) {
+        details.push(`removed: ${removedValues.join(", ")}`);
+      }
+      if (addedValues.length > 0) {
+        details.push(`added: ${addedValues.join(", ")}`);
+      }
+      const suffix = details.length > 0 ? ` (${details.join("; ")})` : "";
+      addItem(
+        items,
+        "breaking",
+        "schema-enum-changed",
+        `Enum changed at ${schemaPath}${suffix}`,
+        ref
+      );
     }
   }
 
