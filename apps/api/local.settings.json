@@ -3,6 +3,9 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "WAITLIST_TABLE_NAME": "waitlist"
+    "WAITLIST_TABLE_NAME": "waitlist",
+    "REPORTS_TABLE_NAME": "reports",
+    "REPORTS_ADMIN_TOKEN": "local-admin-token",
+    "REPORTS_INGEST_TOKEN": "local-ingest-token"
   }
 }
