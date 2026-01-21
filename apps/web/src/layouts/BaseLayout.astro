@@ -3,9 +3,9 @@ import "../styles/global.css";
 
 const {
   title = "TrueSpec - Keep your API docs honest",
-  description = "Detect drift between your code and your OpenAPI/Swagger specs. Catch breaking changes before they hit production.",
+  description = "Detect drift between your code and your OpenAPI specs. Catch breaking changes before they hit production.",
   canonical = "https://truespec-app.com/",
-  ogImage = "/brand/og.png",
+  ogImage = "/brand/og.svg",
 } = Astro.props;
 
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
@@ -26,6 +26,7 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_PROJECT_ID;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={title} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
