@@ -150,6 +150,21 @@ import SiteNav from "../components/SiteNav.astro";
         <div class="card border border-base-300 bg-base-200/60">
           <div class="card-body">
             <h2 class="text-lg font-semibold">Recent reports</h2>
+            <div class="mt-2 flex flex-wrap items-center gap-4 text-xs text-base-content/60">
+              <span class="uppercase tracking-[0.3em] text-base-content/50">Filter</span>
+              <label class="flex items-center gap-2">
+                <input class="checkbox checkbox-xs" type="checkbox" data-report-filter="breaking" />
+                <span>Breaking</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input class="checkbox checkbox-xs" type="checkbox" data-report-filter="warning" />
+                <span>Warning</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input class="checkbox checkbox-xs" type="checkbox" data-report-filter="info" />
+                <span>Info</span>
+              </label>
+            </div>
             <div class="mt-3 overflow-x-auto">
               <table class="table table-sm">
                 <thead>
@@ -253,6 +268,7 @@ import SiteNav from "../components/SiteNav.astro";
     const reportBreaking = document.querySelector('[data-report-summary="breaking"]');
     const reportWarning = document.querySelector('[data-report-summary="warning"]');
     const reportInfo = document.querySelector('[data-report-summary="info"]');
+    const reportFilters = document.querySelectorAll("[data-report-filter]");
 
     const tokenKey = "truespec_admin_token";
     const reportsTokenKey = "truespec_reports_token";
@@ -261,6 +277,7 @@ import SiteNav from "../components/SiteNav.astro";
     const githubEndpoint = `https://api.github.com/repos/${githubRepo}`;
     let activeReportsToken = "";
     let activeReportsRepo = "";
+    let reportsCache = [];
 
     const setStatus = (message, state = "idle") => {
       if (!statusEl) return;
@@ -316,6 +333,22 @@ import SiteNav from "../components/SiteNav.astro";
       reportsEndpoint.textContent = `Endpoint: /api/reports?repo=${safeRepo}`;
     };
 
+    const getActiveReportFilters = () => {
+      if (!reportFilters.length) return [];
+      return Array.from(reportFilters)
+        .filter((input) => input instanceof HTMLInputElement && input.checked)
+        .map((input) => input.getAttribute("data-report-filter"))
+        .filter(Boolean);
+    };
+
+    const filterReports = (items) => {
+      const activeFilters = getActiveReportFilters();
+      if (activeFilters.length === 0) return items;
+      return items.filter((item) =>
+        activeFilters.some((filter) => (item.summary?.[filter] ?? 0) > 0)
+      );
+    };
+
     const formatDate = (value) => {
       if (!value) return "--";
       const parsed = Date.parse(value);
@@ -363,12 +396,12 @@ import SiteNav from "../components/SiteNav.astro";
       });
     };
 
-    const renderReportsList = (items) => {
+    const renderReportsList = (items, emptyMessage = "No data yet.") => {
       if (!reportsList) return;
       reportsList.innerHTML = "";
       if (!items || items.length === 0) {
         const row = document.createElement("tr");
-        row.innerHTML = '<td colspan="6" class="text-base-content/50">No data yet.</td>';
+        row.innerHTML = `<td colspan="6" class="text-base-content/50">${emptyMessage}</td>`;
         reportsList.appendChild(row);
         return;
       }
@@ -395,6 +428,15 @@ import SiteNav from "../components/SiteNav.astro";
       });
     };
 
+    const refreshReportsList = () => {
+      const filtered = filterReports(reportsCache);
+      const activeFilters = getActiveReportFilters();
+      const emptyMessage =
+        activeFilters.length > 0 ? "No reports match the selected filters." : "No data yet.";
+      renderReportsList(filtered, emptyMessage);
+      return filtered;
+    };
+
     const resetDashboard = () => {
       setMetric(metricTotal, "--");
       setMetric(metric24h, "--");
@@ -405,7 +447,8 @@ import SiteNav from "../components/SiteNav.astro";
     };
 
     const resetReports = () => {
-      renderReportsList([]);
+      reportsCache = [];
+      refreshReportsList();
       setReportSummary(null);
       setReportMeta("Pick a report to view details.");
       if (reportMarkdown) {
@@ -515,13 +558,14 @@ import SiteNav from "../components/SiteNav.astro";
         }
 
         const data = await response.json();
-        renderReportsList(data.items || []);
+        reportsCache = data.items || [];
+        const filtered = refreshReportsList();
         if (reportsUpdated) {
           reportsUpdated.textContent = `Updated ${formatDate(new Date().toISOString())}`;
         }
         setReportsStatus("Reports loaded.", "success");
-        if (data.items && data.items.length > 0) {
-          await loadReportDetail(token, data.items[0].id);
+        if (filtered.length > 0) {
+          await loadReportDetail(token, filtered[0].id);
         } else {
           setReportSummary(null);
           setReportMeta("No reports found.");
@@ -587,6 +631,21 @@ import SiteNav from "../components/SiteNav.astro";
       });
     }
 
+    if (reportFilters.length > 0) {
+      reportFilters.forEach((input) => {
+        input.addEventListener("change", () => {
+          const filtered = refreshReportsList();
+          if (filtered.length === 0) {
+            setReportSummary(null);
+            setReportMeta("No reports match the filters.");
+            if (reportMarkdown) {
+              reportMarkdown.textContent = "No reports available for the selected filters.";
+            }
+          }
+        });
+      });
+    }
+
     if (clearBtn instanceof HTMLButtonElement) {
       clearBtn.addEventListener("click", () => {
         sessionStorage.removeItem(tokenKey);
@@ -607,6 +666,13 @@ import SiteNav from "../components/SiteNav.astro";
         }
         if (reportsRepoInput instanceof HTMLInputElement) {
           reportsRepoInput.value = "";
+        }
+        if (reportFilters.length > 0) {
+          reportFilters.forEach((input) => {
+            if (input instanceof HTMLInputElement) {
+              input.checked = false;
+            }
+          });
         }
         resetReports();
         setReportsStatus("Token cleared.", "idle");
