@@ -154,7 +154,7 @@ import SiteNav from "../components/SiteNav.astro";
               <span class="uppercase tracking-[0.3em] text-base-content/50">Filter</span>
               <label class="flex items-center gap-2">
                 <input class="checkbox checkbox-xs" type="checkbox" data-report-filter="breaking" />
-                <span>Breaking</span>
+                <span>Breaking only</span>
               </label>
               <label class="flex items-center gap-2">
                 <input class="checkbox checkbox-xs" type="checkbox" data-report-filter="warning" />
@@ -163,6 +163,15 @@ import SiteNav from "../components/SiteNav.astro";
               <label class="flex items-center gap-2">
                 <input class="checkbox checkbox-xs" type="checkbox" data-report-filter="info" />
                 <span>Info</span>
+              </label>
+              <span class="uppercase tracking-[0.3em] text-base-content/50">Sort</span>
+              <label class="flex items-center gap-2">
+                <select class="select select-xs" data-report-sort>
+                  <option value="created-desc">Newest</option>
+                  <option value="breaking-desc">Most breaking</option>
+                  <option value="warning-desc">Most warning</option>
+                  <option value="info-desc">Most info</option>
+                </select>
               </label>
             </div>
             <div class="mt-3 overflow-x-auto">
@@ -269,6 +278,7 @@ import SiteNav from "../components/SiteNav.astro";
     const reportWarning = document.querySelector('[data-report-summary="warning"]');
     const reportInfo = document.querySelector('[data-report-summary="info"]');
     const reportFilters = document.querySelectorAll("[data-report-filter]");
+    const reportSort = document.querySelector("[data-report-sort]");
 
     const tokenKey = "truespec_admin_token";
     const reportsTokenKey = "truespec_reports_token";
@@ -339,6 +349,44 @@ import SiteNav from "../components/SiteNav.astro";
         .filter((input) => input instanceof HTMLInputElement && input.checked)
         .map((input) => input.getAttribute("data-report-filter"))
         .filter(Boolean);
+    };
+
+    const getReportSort = () => {
+      if (!(reportSort instanceof HTMLSelectElement)) {
+        return "created-desc";
+      }
+      return reportSort.value || "created-desc";
+    };
+
+    const getSortableDate = (value) => {
+      if (!value) return 0;
+      const parsed = Date.parse(value);
+      return Number.isNaN(parsed) ? 0 : parsed;
+    };
+
+    const sortReports = (items) => {
+      const sortValue = getReportSort();
+      const sorted = [...items];
+
+      const sortByMetric = (metric) => {
+        sorted.sort((a, b) => {
+          const diff = (b.summary?.[metric] ?? 0) - (a.summary?.[metric] ?? 0);
+          if (diff !== 0) return diff;
+          return getSortableDate(b.createdAt) - getSortableDate(a.createdAt);
+        });
+      };
+
+      if (sortValue === "breaking-desc") {
+        sortByMetric("breaking");
+      } else if (sortValue === "warning-desc") {
+        sortByMetric("warning");
+      } else if (sortValue === "info-desc") {
+        sortByMetric("info");
+      } else {
+        sorted.sort((a, b) => getSortableDate(b.createdAt) - getSortableDate(a.createdAt));
+      }
+
+      return sorted;
     };
 
     const filterReports = (items) => {
@@ -429,7 +477,7 @@ import SiteNav from "../components/SiteNav.astro";
     };
 
     const refreshReportsList = () => {
-      const filtered = filterReports(reportsCache);
+      const filtered = sortReports(filterReports(reportsCache));
       const activeFilters = getActiveReportFilters();
       const emptyMessage =
         activeFilters.length > 0 ? "No reports match the selected filters." : "No data yet.";
@@ -674,8 +722,17 @@ import SiteNav from "../components/SiteNav.astro";
             }
           });
         }
+        if (reportSort instanceof HTMLSelectElement) {
+          reportSort.value = "created-desc";
+        }
         resetReports();
         setReportsStatus("Token cleared.", "idle");
+      });
+    }
+
+    if (reportSort instanceof HTMLSelectElement) {
+      reportSort.addEventListener("change", () => {
+        refreshReportsList();
       });
     }
   </script>
