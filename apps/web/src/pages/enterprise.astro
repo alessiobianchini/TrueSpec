@@ -1,0 +1,229 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import SiteNav from "../components/SiteNav.astro";
+---
+
+<BaseLayout
+  title="TrueSpec Enterprise - Spec governance for large teams"
+  description="Enterprise-ready spec drift checks with org controls, auditability, and predictable rollouts."
+  canonical="https://truespec-app.com/enterprise"
+>
+  <SiteNav />
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+        <div data-reveal style="--delay:0s">
+          <p class="text-xs uppercase tracking-[0.3em] text-base-content/50 accent-gradient">Enterprise</p>
+          <h1 class="mt-3 text-4xl font-semibold leading-tight md:text-6xl">
+            Spec governance for <span class="accent-gradient">large teams</span>.
+          </h1>
+          <p class="mt-4 text-lg text-base-content/70">
+            Run drift checks across multiple services with policy controls, auditability, and
+            predictable rollouts. Built for security review and procurement from day one.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a
+              class="btn btn-primary"
+              href="mailto:enterprise@truespec-app.com?subject=TrueSpec%20Enterprise%20request"
+            >
+              Contact sales
+            </a>
+            <a class="btn btn-ghost" href="#security">View security posture</a>
+          </div>
+          <div class="mt-8 grid gap-4 sm:grid-cols-3">
+            <div class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.1s">
+              <div class="card-body">
+                <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Controls</p>
+                <p class="text-lg font-semibold">Org-level RBAC</p>
+                <p class="text-sm text-base-content/70">Scope access by team and environment.</p>
+              </div>
+            </div>
+            <div class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.15s">
+              <div class="card-body">
+                <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Audit</p>
+                <p class="text-lg font-semibold">Traceable reports</p>
+                <p class="text-sm text-base-content/70">Every diff linked to a pull request.</p>
+              </div>
+            </div>
+            <div class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.2s">
+              <div class="card-body">
+                <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Success</p>
+                <p class="text-lg font-semibold">Dedicated support</p>
+                <p class="text-sm text-base-content/70">Rollout plans and onboarding.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div data-reveal style="--delay:0.1s">
+          <div class="card border border-base-300 bg-base-200/60 shadow-xl">
+            <div class="card-body gap-6">
+              <div class="flex items-center justify-between text-xs uppercase tracking-widest text-base-content/60">
+                <span class="badge badge-outline">Enterprise pack</span>
+                <span>Early access</span>
+              </div>
+              <div>
+                <p class="text-sm text-base-content/60">Available now</p>
+                <ul class="mt-3 space-y-3 text-sm text-base-content/70">
+                  <li class="flex items-center gap-3">
+                    <span class="badge badge-success badge-outline">Now</span>
+                    Org roles and project scoping
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="badge badge-success badge-outline">Now</span>
+                    Report history with change summaries
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="badge badge-success badge-outline">Now</span>
+                    API tokens for automation
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <p class="text-sm text-base-content/60">Roadmap with enterprise partners</p>
+                <ul class="mt-3 space-y-3 text-sm text-base-content/70">
+                  <li class="flex items-center gap-3">
+                    <span class="badge badge-outline">Roadmap</span>
+                    SAML SSO + SCIM provisioning
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="badge badge-outline">Roadmap</span>
+                    Audit log export + retention policies
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="badge badge-outline">Roadmap</span>
+                    Private networking options
+                  </li>
+                </ul>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <span class="badge badge-outline">Slack support</span>
+                <span class="badge badge-outline">Pilot programs</span>
+                <span class="badge badge-outline">Security review pack</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="security" class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="max-w-2xl" data-reveal style="--delay:0s">
+        <p class="text-xs uppercase tracking-[0.3em] text-base-content/50 accent-gradient">Security</p>
+        <h2 class="mt-3 text-3xl font-semibold md:text-4xl">Enterprise-ready security posture</h2>
+        <p class="mt-4 text-base-content/70">
+          We are building TrueSpec for security review and compliance workflows. We can share data
+          flow diagrams, architecture notes, and controls documentation during evaluation.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.05s">
+          <div class="card-body">
+            <h3 class="card-title">Data handling</h3>
+            <p class="text-base-content/70">
+              Spec diffs and summaries only. No production payloads required.
+            </p>
+          </div>
+        </article>
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.1s">
+          <div class="card-body">
+            <h3 class="card-title">Access controls</h3>
+            <p class="text-base-content/70">
+              Role-based access with scoped org and project permissions.
+            </p>
+          </div>
+        </article>
+        <article class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0.15s">
+          <div class="card-body">
+            <h3 class="card-title">Audit readiness</h3>
+            <p class="text-base-content/70">
+              Traceable PR reports with history, timestamps, and owners.
+            </p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="grid gap-8 lg:grid-cols-2">
+        <div class="card border border-base-300 bg-base-200/60" data-reveal style="--delay:0s">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Deployment</p>
+            <h3 class="mt-2 text-2xl font-semibold">Flexible rollout options</h3>
+            <ul class="mt-4 space-y-3 text-base-content/70">
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">Hosted</span>
+                <span>Managed cloud with dedicated environments.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-outline">Roadmap</span>
+                <span>Private networking and inbound controls.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-outline">Discuss</span>
+                <span>Self-hosted or hybrid options for regulated teams.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card border border-base-300 bg-base-200/60" data-reveal style="--delay:0.05s">
+          <div class="card-body">
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Support</p>
+            <h3 class="mt-2 text-2xl font-semibold">Enterprise onboarding</h3>
+            <ul class="mt-4 space-y-3 text-base-content/70">
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">Included</span>
+                <span>Architecture review and rollout planning.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-success badge-outline">Included</span>
+                <span>Shared roadmap sessions and feedback loops.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="badge badge-outline">Optional</span>
+                <span>Custom SLAs and premium support.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20">
+    <div class="mx-auto w-full max-w-6xl px-4">
+      <div class="card border border-base-300 bg-base-200/70" data-reveal style="--delay:0s">
+        <div class="card-body gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-base-content/50">Ready to evaluate</p>
+            <h3 class="mt-2 text-2xl font-semibold md:text-3xl">
+              Plan an enterprise pilot with TrueSpec.
+            </h3>
+            <p class="mt-2 text-base-content/70">
+              We will share security materials, align success metrics, and support rollout.
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a
+              class="btn btn-primary"
+              href="mailto:enterprise@truespec-app.com?subject=TrueSpec%20Enterprise%20pilot"
+            >
+              Contact sales
+            </a>
+            <a class="btn btn-outline" href="/#waitlist">Join the waitlist</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
