@@ -86,6 +86,37 @@ import SiteNav from "../../components/SiteNav.astro";
         </div>
       </div>
 
+      <div class="mt-8 card border border-base-300 bg-base-200/60">
+        <div class="card-body gap-3">
+          <h3 class="text-lg font-semibold">Example PR summary</h3>
+          <p class="text-base-content/70">
+            The report shows severity, endpoint context, and schema-level diffs so reviewers can
+            focus on breaking risk.
+          </p>
+          <div class="mockup-code text-xs">
+            <pre data-prefix=">"><code>Summary</code></pre>
+            <pre data-prefix=">"><code>Breaking: 5 | Warning: 3 | Info: 3</code></pre>
+            <pre data-prefix=">"><code></code></pre>
+            <pre data-prefix=">"><code>BREAKING (5)</code></pre>
+            <pre data-prefix=">"><code>- Removed operation DELETE /v1/users/{id}</code></pre>
+            <pre data-prefix=">"><code>- Removed response 404 for GET /v1/users</code></pre>
+            <pre data-prefix=">"><code>- Enum changed at response.200.body.status</code></pre>
+            <pre data-prefix=">"><code>- Removed field response.200.body.email</code></pre>
+            <pre data-prefix=">"><code>- Type changed at request.body.price</code></pre>
+            <pre data-prefix=">"><code></code></pre>
+            <pre data-prefix=">"><code>WARNING (3)</code></pre>
+            <pre data-prefix=">"><code>- New required parameter query:dryRun for PUT /v1/plans</code></pre>
+            <pre data-prefix=">"><code>- Request body is now required for PUT /v1/plans</code></pre>
+            <pre data-prefix=">"><code>- New required field request.body.name</code></pre>
+            <pre data-prefix=">"><code></code></pre>
+            <pre data-prefix=">"><code>INFO (3)</code></pre>
+            <pre data-prefix=">"><code>- Added operation GET /v1/billing</code></pre>
+            <pre data-prefix=">"><code>- Added response 422 for GET /v1/users</code></pre>
+            <pre data-prefix=">"><code>- Added field response.200.body.tier</code></pre>
+          </div>
+        </div>
+      </div>
+
       <div class="mt-10 card border border-base-300 bg-base-200/60">
         <div class="card-body gap-3">
           <h3 class="text-lg font-semibold">Request early access</h3>
